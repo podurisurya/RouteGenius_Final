@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - RouteMax</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            color: #fff;
+            background-color: #111827;
+            overflow-x: hidden;
+        }
+
+        #plexus-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .navbar-custom {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .widget-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .widget-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .widget-title i {
+            color: #38bdf8;
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .summary-item .count {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .summary-item .label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .table-dark-custom {
+            background-color: transparent;
+        }
+        .table-dark-custom thead {
+            color: #38bdf8;
+        }
+        .table-dark-custom th, .table-dark-custom td {
+            border-color: rgba(255, 255, 255, 0.15);
+            vertical-align: middle;
+        }
+        .table-dark-custom tbody tr:hover {
+            background-color: rgba(56, 189, 248, 0.1);
+        }
+
+        .form-control-dark {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        .form-control-dark:focus {
+            background-color: rgba(0, 0, 0, 0.4);
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
+            color: #fff;
+        }
+        .form-control-dark::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+        .btn-custom {
+            background: #38bdf8;
+            color: #111827;
+            font-weight: 600;
+            border: none;
+        }
+        .btn-custom:hover {
+            background: #38bdf5;
+        }
+
+        .modal-dark {
+            background: #1f2937;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .modal-dark .modal-header, .modal-dark .modal-footer {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .toast-notification { position: fixed; top: 20px; right: 20px; background-color: #28a745; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; z-index: 1050; transform: translateX(120%); transition: transform 0.5s ease-in-out; }
+        .toast-notification.show { transform: translateX(0); }
+        .toast-notification.error { background-color: #dc3545; }
+        .toast-notification i { font-size: 1.5rem; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<canvas id="plexus-canvas"></canvas>
+
+<div id="toast" class="toast-notification">
+    <i id="toast-icon" class="bi"></i>
+    <span id="toast-message"></span>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="admin-home.html"><i class="bi bi-shield-lock me-2"></i>RouteMax Admin</a>
+        <div class="d-flex align-items-center">
+            <span class="navbar-text me-3 d-none d-sm-block">Welcome, Admin</span>
+            <button class="btn btn-outline-light" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3">
+            <div class="widget-card">
+                <h5 class="widget-title"><i class="bi bi-grid-fill"></i>Dashboard</h5>
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white active" id="nav-home" onclick="showSection('home')">Home</a>
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white" id="nav-users" onclick="showSection('users')">Manage Users</a>
+                    <a href="admin-parcels.html" class="list-group-item list-group-item-action bg-transparent text-white">Manage Parcels</a>
+                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white" id="nav-account" onclick="showSection('account')">Account</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="col-lg-9">
+            <!-- Home Section -->
+            <div id="homeSection">
+                <div class="widget-card">
+                    <h2 class="widget-title"><i class="bi bi-speedometer2"></i>At a Glance</h2>
+                    <div class="row text-center gy-4">
+                        <div class="col-6 col-md-4 summary-item">
+                            <div id="totalUsers" class="count">0</div>
+                            <div class="label">Total Users</div>
+                        </div>
+                        <div class="col-6 col-md-4 summary-item">
+                            <div id="totalParcels" class="count">0</div>
+                            <div class="label">Total Parcels</div>
+                        </div>
+                        <div class="col-12 col-md-4 summary-item">
+                            <div id="dispatchedParcels" class="count">0</div>
+                            <div class="label">Parcels Dispatched</div>
+                        </div>
+                        <div class="col-6 summary-item">
+                            <div id="inTransitParcels" class="count">0</div>
+                            <div class="label">In Transit</div>
+                        </div>
+                        <div class="col-6 summary-item">
+                            <div id="deliveredParcels" class="count">0</div>
+                            <div class="label">Delivered</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="usersSection" class="d-none">
+                <div class="widget-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <h2 class="widget-title mb-0"><i class="bi bi-people-fill"></i>User Management</h2>
+                        <button class="btn btn-custom" onclick="openAddUserModal()">
+                            <i class="bi bi-plus-circle me-2"></i>Add New User
+                        </button>
+                    </div>
+                    <input type="text" class="form-control form-control-dark my-3" id="searchInput" placeholder="Search by name or email..." onkeyup="filterUsers()">
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom table-hover">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="userTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Section -->
+            <div id="accountSection" class="d-none">
+                <div class="widget-card">
+                    <h2 class="widget-title"><i class="bi bi-person-badge-fill"></i>Admin Account</h2>
+                    <p><strong>Username:</strong> admin</p>
+                    <button class="btn btn-sm btn-outline-danger" onclick="showToast('This feature is not yet implemented.', true)">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="mb-3">
+                        <label for="newUserName" class="form-label">Name</label>
+                        <input type="text" class="form-control form-control-dark" id="newUserName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newUserEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control form-control-dark" id="newUserEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newUserPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control form-control-dark" id="newUserPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-custom w-100 mt-2">Create User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserEmailOriginal">
+                    <div class="mb-3">
+                        <label for="editUserEmail" class="form-label">Email Address</label>
+                        <input type="email" class="form-control form-control-light" id="editUserEmail" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control form-control-dark" id="editUserName" required>
+                    </div>
+                    <button type="submit" class="btn btn-custom w-100 mt-2">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Action</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalText"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmModalBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let allUsers = [];
+    let allParcels = [];
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const toastIcon = document.getElementById('toast-icon');
+        toastMessage.textContent = message;
+        toast.className = 'toast-notification';
+        toastIcon.className = 'bi';
+        if (isError) {
+            toast.classList.add('error');
+            toastIcon.classList.add('bi-x-circle-fill');
+        } else {
+            toastIcon.classList.add('bi-check-circle-fill');
+        }
+        toast.classList.add('show');
+        setTimeout(() => { toast.classList.remove('show'); }, 4000);
+    }
+
+    function showSection(sectionName) {
+        document.getElementById('homeSection').classList.add('d-none');
+        document.getElementById('usersSection').classList.add('d-none');
+        document.getElementById('accountSection').classList.add('d-none');
+        document.querySelectorAll('.list-group-item').forEach(link => link.classList.remove('active'));
+        document.getElementById(`${sectionName}Section`).classList.remove('d-none');
+        document.getElementById(`nav-${sectionName}`).classList.add('active');
+        if (sectionName === 'users') fetchUsers();
+    }
+
+    async function fetchDashboardData() {
+        try {
+            const [usersRes, parcelsRes] = await Promise.all([
+                fetch("http://localhost:8080/admin/users", { headers: { "Authorization": "Basic " + btoa("admin:admin123") } }),
+                fetch("http://localhost:8080/admin/parcels", { headers: { "Authorization": "Basic " + btoa("admin:admin123") } })
+            ]);
+            if (!usersRes.ok || !parcelsRes.ok) throw new Error('Failed to fetch data');
+            allUsers = await usersRes.json();
+            allParcels = await parcelsRes.json();
+
+            document.getElementById('totalUsers').textContent = allUsers.length;
+            document.getElementById('totalParcels').textContent = allParcels.length;
+
+            const dispatchedCount = allParcels.filter(p => p.status === 'Created').length;
+            document.getElementById('dispatchedParcels').textContent = dispatchedCount;
+
+            const inTransitCount = allParcels.filter(p => p.status === 'In Transit').length;
+            document.getElementById('inTransitParcels').textContent = inTransitCount;
+
+            const deliveredCount = allParcels.filter(p => p.status === 'Delivered').length;
+            document.getElementById('deliveredParcels').textContent = deliveredCount;
+
+        } catch (err) {
+            showToast("Error fetching dashboard data.", true);
+        }
+    }
+
+    function fetchUsers() {
+        renderUsers(allUsers);
+    }
+
+    function renderUsers(users) {
+        const tbody = document.getElementById("userTableBody");
+        tbody.innerHTML = "";
+        users.forEach(user => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-outline-primary" onclick="editUser('${user.email}')">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete('${user.email}')">Delete</button>
+                </td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function filterUsers() {
+        const query = document.getElementById("searchInput").value.toLowerCase();
+        const filtered = allUsers.filter(user =>
+            user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query)
+        );
+        renderUsers(filtered);
+    }
+
+    function openAddUserModal() {
+        const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+        modal.show();
+    }
+
+    document.getElementById("addUserForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const user = {
+            name: document.getElementById("newUserName").value,
+            email: document.getElementById("newUserEmail").value,
+            password: document.getElementById("newUserPassword").value,
+            role: "USER"
+        };
+        try {
+            const res = await fetch("http://localhost:8080/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user)
+            });
+            const msg = await res.text();
+            showToast(msg, !res.ok);
+            if(res.ok) {
+                await fetchDashboardData(); // Refresh data
+                fetchUsers();
+                bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+                this.reset();
+            }
+        } catch(err) {
+            showToast("Failed to create user.", true);
+        }
+    });
+
+    function editUser(email) {
+        const user = allUsers.find(u => u.email === email);
+        if (user) {
+            document.getElementById('editUserEmailOriginal').value = user.email;
+            document.getElementById('editUserEmail').value = user.email;
+            document.getElementById('editUserName').value = user.name;
+            editUserModal.show();
+        } else {
+            showToast('Could not find user data.', true);
+        }
+    }
+
+    document.getElementById("editUserForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const originalEmail = document.getElementById("editUserEmailOriginal").value;
+        const payload = {
+            name: document.getElementById("editUserName").value
+        };
+
+        try {
+            const res = await fetch(`http://localhost:8080/admin/users/${originalEmail}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": "Basic " + btoa("admin:admin123"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                showToast("User updated successfully.");
+                await fetchDashboardData(); // Refresh all data
+                fetchUsers(); // Re-render the user table
+                editUserModal.hide();
+            } else {
+                throw new Error('Failed to update user.');
+            }
+        } catch (err) {
+            showToast(err.message, true);
+        }
+    });
+
+    function confirmDelete(email) {
+        document.getElementById('confirmModalText').textContent = `Are you sure you want to delete the user with email: ${email}?`;
+        const confirmBtn = document.getElementById('confirmModalBtn');
+        confirmBtn.onclick = () => {
+            deleteUser(email);
+            confirmModal.hide();
+        };
+        confirmModal.show();
+    }
+
+    async function deleteUser(email) {
+        try {
+            const res = await fetch(`http://localhost:8080/admin/users/${encodeURIComponent(email)}`, {
+                method: "DELETE",
+                headers: { "Authorization": "Basic " + btoa("admin:admin123") }
+            });
+            if (res.ok) {
+                showToast("User deleted successfully.");
+                await fetchDashboardData(); // Refresh data
+                fetchUsers();
+            } else {
+                showToast("Failed to delete user.", true);
+            }
+        } catch (err) {
+            showToast("Error while deleting user.", true);
+        }
+    }
+
+    function logout() { window.location.href = "index.html"; }
+
+    document.addEventListener("DOMContentLoaded", fetchDashboardData);
+
+    // --- Plexus Animation Script ---
+    const canvas = document.getElementById('plexus-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let points = [];
+    class Point {
+        constructor(x, y) { this.x = x; this.y = y; this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5; this.radius = 1.5; }
+        move() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > canvas.width) this.vx *= -1; if (this.y < 0 || this.y > canvas.height) this.vy *= -1; }
+        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'rgba(56, 189, 248, 0.8)'; ctx.fill(); }
+    }
+    function init() {
+        points = [];
+        const pointCount = (canvas.width * canvas.height) / 10000;
+        for (let i = 0; i < pointCount; i++) {
+            points.push(new Point(Math.random() * canvas.width, Math.random() * canvas.height));
+        }
+    }
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        points.forEach(point => { point.move(); point.draw(); });
+        drawLines();
+        requestAnimationFrame(animate);
+    }
+    function drawLines() {
+        for (let i = 0; i < points.length; i++) {
+            for (let j = i + 1; j < points.length; j++) {
+                const dist = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
+                if (dist < 120) {
+                    ctx.beginPath();
+                    ctx.moveTo(points[i].x, points[i].y);
+                    ctx.lineTo(points[j].x, points[j].y);
+                    ctx.strokeStyle = `rgba(56, 189, 248, ${1 - dist / 120})`;
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; init(); });
+    init();
+    animate();
+</script>
+
+</body>
+</html>

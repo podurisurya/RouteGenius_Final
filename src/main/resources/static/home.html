@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - RouteMax</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            color: #fff;
+            background-color: #0d1117;
+            overflow-x: hidden;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .navbar-custom {
+            background: rgba(13, 17, 23, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-header {
+            padding: 4rem 0 2rem 0;
+            text-align: center;
+            animation: fadeInDown 1s ease-in-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .dashboard-header p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .widget-card {
+            background: rgba(13, 17, 23, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .widget-card:hover {
+            border-color: rgba(32, 201, 151, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .widget-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .widget-title i {
+            color: #20c997;
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        #trackingIdInput {
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        #trackingIdInput:focus {
+            background-color: rgba(0, 0, 0, 0.4);
+            border-color: #20c997;
+            box-shadow: 0 0 0 0.25rem rgba(32, 201, 151, 0.25);
+            color: #fff;
+        }
+
+        #trackingIdInput::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #trackParcelForm .btn {
+            height: 50px;
+            background: #20c997;
+            color: #0d1117;
+            font-weight: 600;
+            border: none;
+        }
+
+        .btn-outline-warning {
+            color: #ffc107;
+            border-color: #ffc107;
+        }
+        .btn-outline-warning:hover {
+            background: #ffc107;
+            color: #0d1117;
+        }
+
+        .widget-text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .recent-shipments .list-group-item {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .recent-shipments .list-group-item:hover {
+            background-color: rgba(32, 201, 151, 0.1);
+        }
+
+        /* Progress Tracker Styles (unchanged) */
+        .progress-tracker { display: flex; justify-content: space-between; list-style: none; padding: 0; margin: 30px 0; }
+        .progress-step { flex-grow: 1; text-align: center; position: relative; }
+        .progress-step .icon { height: 60px; width: 60px; border-radius: 50%; background-color: #343a40; color: #adb5bd; font-size: 1.8rem; display: inline-flex; align-items: center; justify-content: center; border: 4px solid #343a40; transition: all 0.4s ease; }
+        .progress-step .label { display: block; margin-top: 10px; font-weight: 500; color: #adb5bd; }
+        .progress-step:not(:last-child)::after { content: ''; position: absolute; height: 4px; width: calc(100% - 70px); background-color: #343a40; top: 30px; left: calc(50% + 35px); z-index: -1; transition: background-color 0.4s ease; }
+        .progress-step.active .icon { background-color: #20c997; color: white; border-color: #20c997; animation: pulse 1.5s infinite; }
+        .progress-step.active .label { color: #20c997; }
+        .progress-step.completed .icon { background-color: #20c997; border-color: #20c997; color: white; }
+        .progress-step.completed .label { color: #fff; }
+        .progress-step.completed::after { background-color: #20c997; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(32, 201, 151, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0); }
+        }
+
+        /* Toast Notification Styles (unchanged) */
+        .toast-notification { position: fixed; top: 20px; right: 20px; background-color: #28a745; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; z-index: 1050; transform: translateX(120%); transition: transform 0.5s ease-in-out; }
+        .toast-notification.show { transform: translateX(0); }
+        .toast-notification.error { background-color: #dc3545; }
+        .toast-notification i { font-size: 1.5rem; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast-notification">
+    <i id="toast-icon" class="bi"></i>
+    <span id="toast-message"></span>
+</div>
+
+<canvas id="particle-canvas"></canvas>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">RouteMax</a>
+        <div class="d-flex align-items-center">
+            <span class="navbar-text me-3 d-none d-sm-block" id="navWelcome"></span>
+            <button class="btn btn-outline-light" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <header class="dashboard-header">
+        <h1 id="welcomeMessage">Welcome back!</h1>
+        <p>Your personal logistics dashboard. Track any shipment instantly.</p>
+    </header>
+
+    <div class="row">
+        <!-- Main Column -->
+        <div class="col-lg-8">
+            <!-- Tracking Widget -->
+            <div class="widget-card" id="trackingWidget">
+                <h5 class="widget-title"><i class="bi bi-search"></i>Track Your Shipment</h5>
+                <form id="trackParcelForm" class="input-group">
+                    <input type="text" class="form-control" id="trackingIdInput" placeholder="Enter Your Tracking ID" required>
+                    <button type="submit" class="btn"><i class="bi bi-arrow-right"></i></button>
+                </form>
+                <div id="parcelResult" class="mt-4 d-none">
+                    <!-- Progress tracker will be injected here -->
+                </div>
+            </div>
+            <!-- Announcements Widget -->
+            <div class="widget-card">
+                <h5 class="widget-title"><i class="bi bi-newspaper"></i>Announcements</h5>
+                <p class="widget-text-muted">Stay tuned for new features and updates to the RouteMax platform. We are always working to improve your experience!</p>
+            </div>
+        </div>
+
+        <!-- Sidebar Column -->
+        <div class="col-lg-4">
+            <!-- Account Widget -->
+            <div class="widget-card">
+                <h5 class="widget-title"><i class="bi bi-person-circle"></i>My Account</h5>
+                <p class="mb-1"><strong>Username:</strong> <span id="userNameDisplay"></span></p>
+                <p><strong>Email:</strong> <span id="userEmailDisplay"></span></p>
+                <button class="btn btn-sm btn-outline-warning" onclick="openPasswordModal()">Change Password</button>
+            </div>
+            <!-- Help Widget -->
+            <div class="widget-card">
+                <h5 class="widget-title"><i class="bi bi-question-circle-fill"></i>Help & Support</h5>
+                <p class="widget-text-muted small">Having trouble? Contact our support team at <a href="mailto:support@routemax.com" class="text-white">support@routemax.com</a> for assistance.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal (unchanged) -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <h5 class="modal-title">Change Password</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                    </div>
+                    <button type="submit" class="btn w-100" style="background: #20c997; color: #0d1117; font-weight: 600;">Update Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const username = localStorage.getItem("username") || "User";
+    const email = localStorage.getItem("email") || "[unknown]";
+
+    document.getElementById("welcomeMessage").innerText = `Welcome back, ${username}!`;
+    document.getElementById("navWelcome").innerText = `Hi, ${username}`;
+    document.getElementById("userNameDisplay").innerText = username;
+    document.getElementById("userEmailDisplay").innerText = email;
+
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const toastIcon = document.getElementById('toast-icon');
+        toastMessage.textContent = message;
+        toast.className = 'toast-notification';
+        toastIcon.className = 'bi';
+        if (isError) {
+            toast.classList.add('error');
+            toastIcon.classList.add('bi-x-circle-fill');
+        } else {
+            toastIcon.classList.add('bi-check-circle-fill');
+        }
+        toast.classList.add('show');
+        setTimeout(() => { toast.classList.remove('show'); }, 4000);
+    }
+
+    // --- Parcel Tracking Logic ---
+    document.getElementById("trackParcelForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const trackingId = document.getElementById("trackingIdInput").value.trim().toUpperCase();
+        if (trackingId) trackParcel(trackingId);
+    });
+
+    async function trackParcel(trackingId) {
+        const resultContainer = document.getElementById('parcelResult');
+        try {
+            const res = await fetch(`http://localhost:8080/api/parcels/track/${trackingId}`);
+            if (!res.ok) throw new Error("Parcel not found");
+            const parcel = await res.json();
+
+            // ✅ MODIFIED: Added the parcel description to the dynamically generated HTML
+            resultContainer.innerHTML = `
+                <hr style="border-color: rgba(255,255,255,0.2);">
+                <div class="row mb-3 text-center">
+                    <div class="col-md-6"><strong>Tracking ID:</strong> <span>${parcel.trackingId}</span></div>
+                    <div class="col-md-6"><strong>Current Status:</strong> <span class="badge fs-6" id="status-badge-${parcel.trackingId}">${parcel.status}</span></div>
+                </div>
+                <ul class="progress-tracker">
+                    <li class="progress-step" data-step="Created"><div class="icon"><i class="bi bi-box-seam"></i></div><div class="label">Order Created</div></li>
+                    <li class="progress-step" data-step="In Transit"><div class="icon"><i class="bi bi-truck"></i></div><div class="label">In Transit</div></li>
+                    <li class="progress-step" data-step="Delivered"><div class="icon"><i class="bi bi-check-circle-fill"></i></div><div class="label">Delivered</div></li>
+                </ul>
+                <div class="text-center text-danger d-none" id="cancelledNotice-${parcel.trackingId}">
+                     <i class="bi bi-x-circle-fill fs-1"></i><h4 class="mt-2">This Shipment was Cancelled</h4>
+                </div>
+                <div class="text-center mt-4">
+                    <h6>Shipment Contains:</h6>
+                    <p class="widget-text-muted">${parcel.parcelDescription}</p>
+                </div>
+                <div class="row bg-dark p-3 rounded mt-3">
+                    <div class="col-md-6"><h6>From:</h6><p class="mb-0"><b>${parcel.senderName}</b><br>${parcel.senderAddress}</p></div>
+                    <div class="col-md-6"><h6>To:</h6><p class="mb-0"><b>${parcel.recipientName}</b><br>${parcel.recipientAddress}</p></div>
+                </div>
+            `;
+            updateProgressTracker(parcel.status, parcel.trackingId);
+            resultContainer.classList.remove('d-none');
+
+        } catch (err) {
+            showToast("Parcel not found. Please check the Tracking ID.", true);
+            resultContainer.classList.add('d-none');
+        }
+    }
+
+    function updateProgressTracker(status, trackingId) {
+        const resultContainer = document.getElementById('parcelResult');
+        const steps = resultContainer.querySelectorAll('.progress-step');
+        const cancelledNotice = document.getElementById(`cancelledNotice-${trackingId}`);
+        const statusBadge = document.getElementById(`status-badge-${trackingId}`);
+
+        steps.forEach(step => step.classList.remove('active', 'completed'));
+
+        const statusMap = {'Created': 1, 'In Transit': 2, 'Delivered': 3};
+        const currentStepIndex = statusMap[status] || 0;
+
+        statusBadge.classList.add(status === 'Cancelled' ? 'bg-danger' : 'bg-primary');
+
+        if (status === 'Cancelled') {
+            if (cancelledNotice) cancelledNotice.classList.remove('d-none');
+            steps.forEach(s => s.parentElement.classList.add('d-none'));
+        } else {
+            for (let i = 0; i < currentStepIndex; i++) {
+                if (i < currentStepIndex - 1) { steps[i].classList.add('completed'); }
+                else { steps[i].classList.add('active'); }
+            }
+            if(status === 'Delivered'){ steps.forEach(step => step.classList.add('completed')); }
+        }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+    }
+
+    function openPasswordModal() {
+        const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+        modal.show();
+    }
+
+    document.getElementById("changePasswordForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const newPassword = document.getElementById("newPassword").value;
+        fetch("http://localhost:8080/api/auth/change-password", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email, newPassword: newPassword })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to update password.");
+                showToast("Password updated successfully.");
+                bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+                this.reset();
+            })
+            .catch(err => showToast("Something went wrong. Try again.", true));
+    });
+
+    // --- Full Particle Animation Script (unchanged) ---
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let particlesArray;
+    class Particle {
+        constructor(x, y, directionX, directionY, size) { this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; }
+        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = 'rgba(32, 201, 151, 0.8)'; ctx.fill(); }
+        update() { if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; } if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; } this.x += this.directionX; this.y += this.directionY; this.draw(); }
+    }
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 2) + 1;
+            let x = (Math.random() * (innerWidth - size * 2) + size);
+            let y = (Math.random() * (innerHeight - size * 2) + size);
+            let directionX = (Math.random() * 0.4) - 0.2;
+            let directionY = (Math.random() * 0.4) - 0.2;
+            particlesArray.push(new Particle(x, y, directionX, directionY, size));
+        }
+    }
+    function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); } connect(); }
+    function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+                let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+                if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                    opacityValue = 1 - (distance / 20000);
+                    ctx.strokeStyle = `rgba(32, 201, 151, ${opacityValue})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+    window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; init(); });
+    init();
+    animate();
+</script>
+
+</body>
+</html>

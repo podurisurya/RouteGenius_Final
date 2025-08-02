@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.2</version> <!-- Using a slightly more stable version -->
+		<version>3.3.2</version>
 		<relativePath/>
 	</parent>
 
@@ -53,7 +53,7 @@
 			<version>1.18.30</version>
 		</dependency>
 
-		<!-- DB Driver for Render -->
+		<!-- DB Driver for Render/Railway -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

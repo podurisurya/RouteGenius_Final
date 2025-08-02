@@ -79,27 +79,21 @@ public class SecurityConfig {
 
 
     @Bean
-
     public CorsConfigurationSource corsConfigurationSource() {
-
         CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:63342"));
-
+        // IMPORTANT: Replace the localhost URL with "*" to allow all origins for now.
+        // For production, you would list your specific frontend URL.
+        configuration.setAllowedOrigins(Arrays.asList("*")); // Changed from localhost
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
         configuration.setAllowedHeaders(Arrays.asList("*"));
-
         configuration.setAllowCredentials(true);
 
-
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
-
     }
+
+
+}
 
 }

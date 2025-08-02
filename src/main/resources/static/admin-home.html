@@ -5,128 +5,286 @@
     <title>Admin Dashboard - RouteMax</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- Base & Admin Theming --- */
+        :root {
+            --bg-color: #020409;
+            --admin-glow: #6366f1; /* Indigo Glow */
+            --admin-glow-dark: #4f51c0;
+            --admin-accent: #818cf8; /* Lighter Indigo */
+            --card-bg: rgba(16, 23, 42, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --danger-color: #f43f5e; /* Rose Red for delete */
+        }
+
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            color: #fff;
-            background-color: #111827;
+            color: var(--text-primary);
+            background-color: var(--bg-color);
             overflow-x: hidden;
         }
 
-        #plexus-canvas {
+        #particle-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
+            opacity: 0.6;
         }
 
-        .navbar-custom {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .widget-card {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 25px;
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.8s ease-in-out;
-        }
-
+        /* --- Animations --- */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .widget-title {
+        /* --- Navbar --- */
+        .navbar-custom {
+            background: rgba(2, 4, 9, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--admin-accent);
+        }
+        .btn-logout {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-logout:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+
+        /* --- Main Layout --- */
+        .main-container {
+            display: flex;
+            padding-top: 2rem;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            padding-right: 2rem;
+        }
+        .nav-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-in-out;
+        }
+        .nav-title {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
+            color: var(--text-primary);
         }
-
-        .widget-title i {
-            color: #38bdf8;
-            margin-right: 10px;
+        .nav-title i {
+            color: var(--admin-accent);
+            margin-right: 12px;
             font-size: 1.5rem;
         }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .nav-link i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        .nav-link:hover {
+            background-color: rgba(129, 140, 248, 0.1);
+            color: var(--text-primary);
+        }
+        .nav-link.active {
+            background-color: var(--admin-glow);
+            color: var(--text-primary);
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
 
+        /* --- Main Content Area --- */
+        .content-area {
+            flex-grow: 1;
+        }
+        .widget-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-in-out;
+        }
+        .widget-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .widget-title i {
+            color: var(--admin-accent);
+            margin-right: 15px;
+        }
         .summary-item .count {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #38bdf8;
+            color: var(--admin-accent);
         }
-
         .summary-item .label {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-secondary);
         }
 
-        .table-dark-custom {
+        /* --- Table Styling --- */
+        .table-custom {
             background-color: transparent;
+            color: var(--text-primary);
         }
-        .table-dark-custom thead {
-            color: #38bdf8;
+        .table-custom thead th {
+            color: var(--admin-accent);
+            border-bottom-width: 2px;
         }
-        .table-dark-custom th, .table-dark-custom td {
-            border-color: rgba(255, 255, 255, 0.15);
+        .table-custom th, .table-custom td {
+            border-color: var(--border-color);
             vertical-align: middle;
         }
-        .table-dark-custom tbody tr:hover {
-            background-color: rgba(56, 189, 248, 0.1);
+        .table-custom tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+        .table-custom .btn-icon {
+            background: transparent;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 5px;
+            transition: all 0.2s ease-in-out;
+            font-size: 1.1rem;
+        }
+        .table-custom .btn-icon.btn-edit {
+            color: var(--admin-accent);
+        }
+        .table-custom .btn-icon.btn-edit:hover {
+            color: var(--text-primary);
+            background-color: rgba(99, 102, 241, 0.9);
+        }
+        .table-custom .btn-icon.btn-delete {
+            color: var(--danger-color);
+        }
+        .table-custom .btn-icon.btn-delete:hover {
+            color: white;
+            background-color: rgba(244, 63, 94, 0.9);
         }
 
+        /* --- Form & Modal Styling --- */
         .form-control-dark {
             background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
             color: #fff;
+            border-radius: 10px;
+            height: 45px;
         }
         .form-control-dark:focus {
-            background-color: rgba(0, 0, 0, 0.4);
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
-            color: #fff;
+            background-color: rgba(16, 23, 42, 1);
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.25);
         }
-        .form-control-dark::placeholder { color: rgba(255, 255, 255, 0.5); }
-
         .btn-custom {
-            background: #38bdf8;
-            color: #111827;
+            background: var(--admin-glow);
+            color: var(--text-primary);
             font-weight: 600;
             border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background 0.3s ease;
         }
+
         .btn-custom:hover {
-            background: #38bdf5;
+            background: var(--admin-glow-dark);
+        }
+        .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .modal-header, .modal-footer {
+            border-color: var(--border-color);
+        }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        .rating-stars i {
+            color: goldenrod;
+            font-size: 1.2rem; /* Optional: slightly enlarge stars */
+            margin-right: 2px; /* Optional: spacing between stars */
         }
 
-        .modal-dark {
-            background: #1f2937;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* --- Toast --- */
+        .toast-notification {
+            position: fixed; top: 20px; right: 20px; z-index: 1050; background: #333;
+            color: white; padding: 15px 20px; border-radius: 8px;
+            border-left: 5px solid var(--admin-accent); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex; align-items: center; transform: translateX(120%);
+            transition: transform 0.5s ease-in-out;
         }
-        .modal-dark .modal-header, .modal-dark .modal-footer {
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .toast-notification { position: fixed; top: 20px; right: 20px; background-color: #28a745; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; z-index: 1050; transform: translateX(120%); transition: transform 0.5s ease-in-out; }
         .toast-notification.show { transform: translateX(0); }
-        .toast-notification.error { background-color: #dc3545; }
+        .toast-notification.error { border-left-color: #dc3545; }
         .toast-notification i { font-size: 1.5rem; margin-right: 10px; }
+        #searchInput {
+            color: white; /* Makes user-typed text white */
+            background-color: #111827; /* Optional: dark background */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
+        }
+        #searchInput::placeholder {
+            color: white;
+            opacity: 0.7;
+        }
+
+        #addUserModal input {
+            color: white;
+            background-color: #111827; /* Optional: matches dark theme */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
+        }
+
+        /* Placeholder text styling */
+        #addUserModal input::placeholder {
+            color: white;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
 
-<canvas id="plexus-canvas"></canvas>
+<canvas id="particle-canvas"></canvas>
 
 <div id="toast" class="toast-notification">
     <i id="toast-icon" class="bi"></i>
@@ -135,140 +293,178 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="admin-home.html"><i class="bi bi-shield-lock me-2"></i>RouteMax Admin</a>
+        <a class="navbar-brand" href="admin-home.html"><i class="bi bi-shield-lock me-2"></i>RouteMax Admin</a>
         <div class="d-flex align-items-center">
             <span class="navbar-text me-3 d-none d-sm-block">Welcome, Admin</span>
-            <button class="btn btn-outline-light" onclick="logout()">Logout</button>
+            <button class="btn btn-logout" onclick="logout()">Logout</button>
         </div>
     </div>
 </nav>
 
-<div class="container py-4">
-    <div class="row">
-        <!-- Sidebar Navigation -->
-        <div class="col-lg-3">
+<div class="container main-container">
+    <aside class="sidebar">
+        <div class="nav-card">
+            <h5 class="nav-title"><i class="bi bi-grid-1x2-fill"></i>Navigation</h5>
+            <div class="list-group">
+                <a class="nav-link active" id="nav-home" onclick="showSection('home')"><i class="bi bi-house-door-fill"></i>Home</a>
+                <a class="nav-link" id="nav-users" onclick="showSection('users')"><i class="bi bi-people-fill"></i>Manage Users</a>
+                <a class="nav-link" id="nav-feedback" onclick="showSection('feedback')"><i class="bi bi-chat-left-quote-fill"></i>Feedback</a>
+                <a href="admin-parcels.html" class="nav-link"><i class="bi bi-box-seam-fill"></i>Manage Parcels</a>
+                <a class="nav-link" id="nav-account" onclick="showSection('account')"><i class="bi bi-person-badge-fill"></i>Account</a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="content-area">
+        <div id="homeSection">
             <div class="widget-card">
-                <h5 class="widget-title"><i class="bi bi-grid-fill"></i>Dashboard</h5>
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white active" id="nav-home" onclick="showSection('home')">Home</a>
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white" id="nav-users" onclick="showSection('users')">Manage Users</a>
-                    <a href="admin-parcels.html" class="list-group-item list-group-item-action bg-transparent text-white">Manage Parcels</a>
-                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white" id="nav-account" onclick="showSection('account')">Account</a>
+                <h2 class="widget-title"><i class="bi bi-speedometer2"></i>At a Glance</h2>
+                <div class="row text-center gy-4">
+                    <div class="col-6 col-md-4 summary-item">
+                        <div id="totalUsers" class="count">0</div>
+                        <div class="label">Total Users</div>
+                    </div>
+                    <div class="col-6 col-md-4 summary-item">
+                        <div id="totalParcels" class="count">0</div>
+                        <div class="label">Total Parcels</div>
+                    </div>
+                    <div class="col-12 col-md-4 summary-item">
+                        <div id="dispatchedParcels" class="count">0</div>
+                        <div class="label">Dispatched</div>
+                    </div>
+                    <div class="col-6 summary-item">
+                        <div id="inTransitParcels" class="count">0</div>
+                        <div class="label">In Transit</div>
+                    </div>
+                    <div class="col-6 summary-item">
+                        <div id="deliveredParcels" class="count">0</div>
+                        <div class="label">Delivered</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="col-lg-9">
-            <!-- Home Section -->
-            <div id="homeSection">
-                <div class="widget-card">
-                    <h2 class="widget-title"><i class="bi bi-speedometer2"></i>At a Glance</h2>
-                    <div class="row text-center gy-4">
-                        <div class="col-6 col-md-4 summary-item">
-                            <div id="totalUsers" class="count">0</div>
-                            <div class="label">Total Users</div>
-                        </div>
-                        <div class="col-6 col-md-4 summary-item">
-                            <div id="totalParcels" class="count">0</div>
-                            <div class="label">Total Parcels</div>
-                        </div>
-                        <div class="col-12 col-md-4 summary-item">
-                            <div id="dispatchedParcels" class="count">0</div>
-                            <div class="label">Parcels Dispatched</div>
-                        </div>
-                        <div class="col-6 summary-item">
-                            <div id="inTransitParcels" class="count">0</div>
-                            <div class="label">In Transit</div>
-                        </div>
-                        <div class="col-6 summary-item">
-                            <div id="deliveredParcels" class="count">0</div>
-                            <div class="label">Delivered</div>
-                        </div>
-                    </div>
+        <div id="usersSection" class="d-none">
+            <div class="widget-card">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h2 class="widget-title mb-0"><i class="bi bi-people-fill"></i>User Management</h2>
+                    <button class="btn btn-custom" onclick="openAddUserModal()">
+                        <i class="bi bi-plus-circle me-2"></i>Add New User
+                    </button>
                 </div>
-            </div>
-
-            <!-- Users Section -->
-            <div id="usersSection" class="d-none">
-                <div class="widget-card">
-                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                        <h2 class="widget-title mb-0"><i class="bi bi-people-fill"></i>User Management</h2>
-                        <button class="btn btn-custom" onclick="openAddUserModal()">
-                            <i class="bi bi-plus-circle me-2"></i>Add New User
-                        </button>
-                    </div>
-                    <input type="text" class="form-control form-control-dark my-3" id="searchInput" placeholder="Search by name or email..." onkeyup="filterUsers()">
-                    <div class="table-responsive">
-                        <table class="table table-dark-custom table-hover">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th class="text-end">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody id="userTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Account Section -->
-            <div id="accountSection" class="d-none">
-                <div class="widget-card">
-                    <h2 class="widget-title"><i class="bi bi-person-badge-fill"></i>Admin Account</h2>
-                    <p><strong>Username:</strong> admin</p>
-                    <button class="btn btn-sm btn-outline-danger" onclick="showToast('This feature is not yet implemented.', true)">Change Password</button>
+                <input type="text" class="form-control form-control-dark my-3" id="searchInput" placeholder="Search by name or email..." onkeyup="filterUsers()">
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div id="feedbackSection" class="d-none">
+            <div class="widget-card">
+                <h2 class="widget-title mb-3"><i class="bi bi-chat-left-quote-fill"></i>Customer Feedback</h2>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                        <tr>
+                            <th>Tracking ID</th>
+                            <th>Customer</th>
+                            <th>Rating</th>
+                            <th>Comments</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody id="feedbackTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="accountSection" class="d-none">
+            <div class="widget-card">
+                <h2 class="widget-title"><i class="bi bi-person-badge-fill"></i>Admin Account</h2>
+                <p><strong>Username:</strong> admin</p>
+                <button class="btn btn-sm btn-outline-danger" onclick="showToast('This feature is not yet implemented.', true)">Change Password</button>
+            </div>
+        </div>
+    </main>
 </div>
 
-<!-- Add User Modal -->
+<!-- ✅ UPDATED Add User Modal -->
 <div class="modal fade" id="addUserModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-dark">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add New User</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="addUserForm">
-                    <div class="mb-3">
-                        <label for="newUserName" class="form-label">Name</label>
-                        <input type="text" class="form-control form-control-dark" id="newUserName" required>
+                    <!-- Step 1: User Details -->
+                    <div id="userDetailsSection">
+                        <div class="mb-3">
+                            <label for="newUserName" class="form-label">Name</label>
+                            <input type="text" class="form-control form-control-dark" id="newUserName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control form-control-dark" id="newUserEmail" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="newUserEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control form-control-dark" id="newUserEmail" required>
+                    <!-- Step 2: OTP and Password (Initially hidden) -->
+                    <div id="otpVerificationSection" class="d-none">
+                        <hr style="border-color: var(--border-color);">
+                        <div class="mb-3">
+                            <label for="newUserPassword" class="form-label">Set Password</label>
+                            <input type="password" class="form-control form-control-dark" id="newUserPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserOtp" class="form-label">Enter OTP</label>
+                            <input type="text" class="form-control form-control-dark" id="newUserOtp" required placeholder="6-Digit Code">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="newUserPassword" class="form-label">Password</label>
-                        <input type="password" class="form-control form-control-dark" id="newUserPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-custom w-100 mt-2">Create User</button>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <!-- Buttons will be dynamically shown/hidden by JS -->
+                <div id="addUserStep1Buttons">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-custom" id="sendOtpBtn">
+                        <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                        <span class="button-text">Send OTP</span>
+                    </button>
+                </div>
+                <div id="addUserStep2Buttons" class="d-none">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-custom" id="createUserBtn">Create User</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Edit User Modal -->
+
 <div class="modal fade" id="editUserModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-dark">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit User</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="editUserForm">
                     <input type="hidden" id="editUserEmailOriginal">
                     <div class="mb-3">
                         <label for="editUserEmail" class="form-label">Email Address</label>
-                        <input type="email" class="form-control form-control-light" id="editUserEmail" disabled>
+                        <input type="email" class="form-control form-control-dark" id="editUserEmail" disabled>
                     </div>
                     <div class="mb-3">
                         <label for="editUserName" class="form-label">Full Name</label>
@@ -281,14 +477,12 @@
     </div>
 </div>
 
-
-<!-- Confirmation Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-dark">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Confirm Action</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p id="confirmModalText"></p>
@@ -301,13 +495,13 @@
     </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let allUsers = [];
     let allParcels = [];
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
     const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+    const addUserModal = new bootstrap.Modal(document.getElementById('addUserModal'));
 
     function showToast(message, isError = false) {
         const toast = document.getElementById('toast');
@@ -318,7 +512,7 @@
         toastIcon.className = 'bi';
         if (isError) {
             toast.classList.add('error');
-            toastIcon.classList.add('bi-x-circle-fill');
+            toastIcon.classList.add('bi-exclamation-triangle-fill');
         } else {
             toastIcon.classList.add('bi-check-circle-fill');
         }
@@ -330,10 +524,47 @@
         document.getElementById('homeSection').classList.add('d-none');
         document.getElementById('usersSection').classList.add('d-none');
         document.getElementById('accountSection').classList.add('d-none');
-        document.querySelectorAll('.list-group-item').forEach(link => link.classList.remove('active'));
+        document.getElementById('feedbackSection').classList.add('d-none');
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
         document.getElementById(`${sectionName}Section`).classList.remove('d-none');
         document.getElementById(`nav-${sectionName}`).classList.add('active');
         if (sectionName === 'users') fetchUsers();
+        if (sectionName === 'feedback') fetchFeedback();
+    }
+
+    async function fetchFeedback() {
+        try {
+            const res = await fetch("http://localhost:8080/admin/feedback", { headers: { "Authorization": "Basic " + btoa("admin:admin123") } });
+            if (!res.ok) throw new Error('Failed to fetch feedback');
+            const feedbackList = await res.json();
+            const tbody = document.getElementById("feedbackTableBody");
+            tbody.innerHTML = "";
+            if (feedbackList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary">No feedback has been submitted yet.</td></tr>';
+                return;
+            }
+            feedbackList.forEach(fb => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${fb.trackingId}</td>
+                    <td>${fb.customerEmail}</td>
+                    <td class="rating-stars">${renderStars(fb.rating)}</td>
+                    <td>${fb.comments || '-'}</td>
+                    <td>${new Date(fb.submittedAt).toLocaleDateString()}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            showToast("Error fetching feedback data.", true);
+        }
+    }
+
+    function renderStars(rating) {
+        let stars = '';
+        for (let i = 0; i < 5; i++) {
+            stars += `<i class="bi ${i < rating ? 'bi-star-fill' : 'bi-star'}"></i>`;
+        }
+        return stars;
     }
 
     async function fetchDashboardData() {
@@ -345,19 +576,11 @@
             if (!usersRes.ok || !parcelsRes.ok) throw new Error('Failed to fetch data');
             allUsers = await usersRes.json();
             allParcels = await parcelsRes.json();
-
             document.getElementById('totalUsers').textContent = allUsers.length;
             document.getElementById('totalParcels').textContent = allParcels.length;
-
-            const dispatchedCount = allParcels.filter(p => p.status === 'Created').length;
-            document.getElementById('dispatchedParcels').textContent = dispatchedCount;
-
-            const inTransitCount = allParcels.filter(p => p.status === 'In Transit').length;
-            document.getElementById('inTransitParcels').textContent = inTransitCount;
-
-            const deliveredCount = allParcels.filter(p => p.status === 'Delivered').length;
-            document.getElementById('deliveredParcels').textContent = deliveredCount;
-
+            document.getElementById('dispatchedParcels').textContent = allParcels.filter(p => p.status === 'Dispatched').length;
+            document.getElementById('inTransitParcels').textContent = allParcels.filter(p => p.status === 'In Transit').length;
+            document.getElementById('deliveredParcels').textContent = allParcels.filter(p => p.status === 'Delivered').length;
         } catch (err) {
             showToast("Error fetching dashboard data.", true);
         }
@@ -370,14 +593,18 @@
     function renderUsers(users) {
         const tbody = document.getElementById("userTableBody");
         tbody.innerHTML = "";
+        if (users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary">No users found.</td></tr>';
+            return;
+        }
         users.forEach(user => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${user.name}</td>
                 <td>${user.email}</td>
                 <td class="text-end">
-                    <button class="btn btn-sm btn-outline-primary" onclick="editUser('${user.email}')">Edit</button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete('${user.email}')">Delete</button>
+                    <button class="btn-icon btn-edit" title="Edit User" onclick="openEditUserModal('${user.email}')"><i class="bi bi-pencil-square"></i></button>
+                    <button class="btn-icon btn-delete" title="Delete User" onclick="confirmDeleteUser('${user.email}')"><i class="bi bi-trash3-fill"></i></button>
                 </td>`;
             tbody.appendChild(tr);
         });
@@ -391,39 +618,95 @@
         renderUsers(filtered);
     }
 
+    // ✅ UPDATED: Logic for the new two-step Add User modal
     function openAddUserModal() {
-        const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
-        modal.show();
+        document.getElementById('addUserForm').reset();
+        // Reset to Step 1 view
+        document.getElementById('userDetailsSection').classList.remove('d-none');
+        document.getElementById('otpVerificationSection').classList.add('d-none');
+        document.getElementById('addUserStep1Buttons').classList.remove('d-none');
+        document.getElementById('addUserStep2Buttons').classList.add('d-none');
+        document.getElementById('newUserName').disabled = false;
+        document.getElementById('newUserEmail').disabled = false;
+        addUserModal.show();
     }
 
-    document.getElementById("addUserForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const user = {
-            name: document.getElementById("newUserName").value,
-            email: document.getElementById("newUserEmail").value,
-            password: document.getElementById("newUserPassword").value,
-            role: "USER"
-        };
+    document.getElementById("sendOtpBtn").addEventListener("click", async function() {
+        const nameInput = document.getElementById("newUserName");
+        const emailInput = document.getElementById("newUserEmail");
+        if (!nameInput.value.trim() || !emailInput.value.trim()) {
+            showToast("Please enter both name and email.", true);
+            return;
+        }
+
+        const spinner = this.querySelector('.spinner-border');
+        const buttonText = this.querySelector('.button-text');
+        spinner.classList.remove('d-none');
+        buttonText.textContent = "Sending...";
+        this.disabled = true;
+
+        const userData = { name: nameInput.value.trim(), email: emailInput.value.trim(), password: "temp-password", role: "USER" };
+
         try {
             const res = await fetch("http://localhost:8080/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user)
+                body: JSON.stringify(userData)
             });
-            const msg = await res.text();
-            showToast(msg, !res.ok);
-            if(res.ok) {
-                await fetchDashboardData(); // Refresh data
-                fetchUsers();
-                bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
-                this.reset();
+            const result = await res.text();
+            showToast(result, !res.ok);
+
+            if (res.ok && result.includes("OTP sent")) {
+                // Transition to Step 2
+                document.getElementById('otpVerificationSection').classList.remove('d-none');
+                document.getElementById('addUserStep1Buttons').classList.add('d-none');
+                document.getElementById('addUserStep2Buttons').classList.remove('d-none');
+                nameInput.disabled = true;
+                emailInput.disabled = true;
             }
-        } catch(err) {
-            showToast("Failed to create user.", true);
+        } catch (err) {
+            showToast("Failed to send OTP. Please try again.", true);
+        } finally {
+            spinner.classList.add('d-none');
+            buttonText.textContent = "Send OTP";
+            this.disabled = false;
         }
     });
 
-    function editUser(email) {
+    document.getElementById("createUserBtn").addEventListener("click", async function() {
+        const payload = {
+            name: document.getElementById("newUserName").value.trim(),
+            email: document.getElementById("newUserEmail").value.trim(),
+            password: document.getElementById("newUserPassword").value,
+            otp: document.getElementById("newUserOtp").value.trim()
+        };
+
+        if (!payload.otp || !payload.password) {
+            showToast("Please enter both OTP and password.", true);
+            return;
+        }
+
+        try {
+            const res = await fetch("http://localhost:8080/api/auth/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            const result = await res.text();
+            showToast(result, !res.ok);
+
+            if (res.ok) {
+                addUserModal.hide();
+                await fetchDashboardData(); // Refresh data
+                showSection('users'); // Switch to users tab to see the new user
+            }
+        } catch (err) {
+            showToast("Network error. Please try again.", true);
+        }
+    });
+
+
+    function openEditUserModal(email) {
         const user = allUsers.find(u => u.email === email);
         if (user) {
             document.getElementById('editUserEmailOriginal').value = user.email;
@@ -438,24 +721,17 @@
     document.getElementById("editUserForm").addEventListener("submit", async function (e) {
         e.preventDefault();
         const originalEmail = document.getElementById("editUserEmailOriginal").value;
-        const payload = {
-            name: document.getElementById("editUserName").value
-        };
-
+        const payload = { name: document.getElementById("editUserName").value };
         try {
             const res = await fetch(`http://localhost:8080/admin/users/${originalEmail}`, {
                 method: "PUT",
-                headers: {
-                    "Authorization": "Basic " + btoa("admin:admin123"),
-                    "Content-Type": "application/json"
-                },
+                headers: { "Authorization": "Basic " + btoa("admin:admin123"), "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-
             if (res.ok) {
                 showToast("User updated successfully.");
-                await fetchDashboardData(); // Refresh all data
-                fetchUsers(); // Re-render the user table
+                await fetchDashboardData();
+                renderUsers(allUsers);
                 editUserModal.hide();
             } else {
                 throw new Error('Failed to update user.');
@@ -465,7 +741,7 @@
         }
     });
 
-    function confirmDelete(email) {
+    function confirmDeleteUser(email) {
         document.getElementById('confirmModalText').textContent = `Are you sure you want to delete the user with email: ${email}?`;
         const confirmBtn = document.getElementById('confirmModalBtn');
         confirmBtn.onclick = () => {
@@ -483,8 +759,8 @@
             });
             if (res.ok) {
                 showToast("User deleted successfully.");
-                await fetchDashboardData(); // Refresh data
-                fetchUsers();
+                await fetchDashboardData();
+                renderUsers(allUsers);
             } else {
                 showToast("Failed to delete user.", true);
             }
@@ -497,45 +773,78 @@
 
     document.addEventListener("DOMContentLoaded", fetchDashboardData);
 
-    // --- Plexus Animation Script ---
-    const canvas = document.getElementById('plexus-canvas');
+    // --- Animated Particle Network Background Script ---
+    const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    let points = [];
-    class Point {
-        constructor(x, y) { this.x = x; this.y = y; this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5; this.radius = 1.5; }
-        move() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > canvas.width) this.vx *= -1; if (this.y < 0 || this.y > canvas.height) this.vy *= -1; }
-        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'rgba(56, 189, 248, 0.8)'; ctx.fill(); }
-    }
-    function init() {
-        points = [];
-        const pointCount = (canvas.width * canvas.height) / 10000;
-        for (let i = 0; i < pointCount; i++) {
-            points.push(new Point(Math.random() * canvas.width, Math.random() * canvas.height));
+    let particlesArray;
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+        update() {
+            if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+            if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+            this.x += this.directionX; this.y += this.directionY;
+            this.draw();
         }
     }
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        points.forEach(point => { point.move(); point.draw(); });
-        drawLines();
-        requestAnimationFrame(animate);
+
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 2.5) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * .4) - .2;
+            let directionY = (Math.random() * .4) - .2;
+            let color = Math.random() > 0.5 ? 'rgba(99, 102, 241, 0.8)' : 'rgba(139, 92, 246, 0.8)';
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
     }
-    function drawLines() {
-        for (let i = 0; i < points.length; i++) {
-            for (let j = i + 1; j < points.length; j++) {
-                const dist = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
-                if (dist < 120) {
+
+    function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+                let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+                if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                    opacityValue = 1 - (distance / 20000);
+                    ctx.strokeStyle = `rgba(139, 92, 246, ${opacityValue})`;
+                    ctx.lineWidth = 1;
                     ctx.beginPath();
-                    ctx.moveTo(points[i].x, points[i].y);
-                    ctx.lineTo(points[j].x, points[j].y);
-                    ctx.strokeStyle = `rgba(56, 189, 248, ${1 - dist / 120})`;
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
                     ctx.stroke();
                 }
             }
         }
     }
-    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; init(); });
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+        connect();
+    }
+
+    window.addEventListener('resize', () => {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        init();
+    });
+
     init();
     animate();
 </script>

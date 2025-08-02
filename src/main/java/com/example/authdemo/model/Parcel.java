@@ -22,7 +22,7 @@ public class Parcel {
     private String parcelDescription;
     private String trackingId;
     private String status;
-
+    private boolean feedbackSubmitted = false;
     // ✅ ADDED: This field was missing, causing the error.
     @CreationTimestamp // This tells Hibernate to automatically set this value when a new parcel is created
     private LocalDateTime createdAt;
@@ -58,6 +58,9 @@ public class Parcel {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public boolean isFeedbackSubmitted() { return feedbackSubmitted; }
+    public void setFeedbackSubmitted(boolean feedbackSubmitted) { this.feedbackSubmitted = feedbackSubmitted; }
 
     // ✅ ADDED: Getter and Setter for the new field
     public LocalDateTime getCreatedAt() { return createdAt; }

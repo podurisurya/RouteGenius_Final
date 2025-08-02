@@ -2,19 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome - RouteMax</title>
+    <title>RouteMax - Real-Time Parcel Tracking</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- Base & Theming --- */
+        :root {
+            --bg-color: #020409;
+            --primary-glow: #00A9FF;
+            --secondary-glow: #A033FF; /* Purple Glow */
+            --card-bg: rgba(16, 23, 42, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #22d3ee;
+        }
+
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            color: #fff;
-            background-color: #0d1117;
-            overflow: hidden;
+            color: var(--text-primary);
+            background-color: var(--bg-color);
+            overflow-x: hidden;
         }
 
         #particle-canvas {
@@ -23,169 +33,462 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0; /* Behind the content */
+            z-index: -1;
+            opacity: 0.5;
         }
 
-        .portal-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            position: relative; /* To ensure it's on top of the canvas */
-            z-index: 1;
-            padding: 20px;
-        }
-
-        .content-wrapper {
-            width: 100%;
-            max-width: 900px;
-            text-align: center;
-            animation: fadeIn 1s ease-in-out;
-        }
-
+        /* --- Animations --- */
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .logo-icon {
-            font-size: 3.5rem;
-            color: #20c997;
-            margin-bottom: 10px;
-            text-shadow: 0 0 15px rgba(32, 201, 151, 0.7);
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .title-section h1 {
-            color: #ffffff;
-            font-size: 3.5rem;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(34, 211, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+        }
+
+        /* --- Navbar --- */
+        .navbar-custom {
+            background: rgba(2, 4, 9, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 0;
+        }
+        .navbar-brand {
             font-weight: 700;
             letter-spacing: 1px;
-            /* ✅ ADDED: Soft shadow for readability */
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 0 10px var(--primary-glow);
         }
-
-        .title-section p {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 5px;
-            margin-bottom: 40px;
-            /* ✅ ADDED: Soft shadow for readability */
-            text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-        }
-
-        .choice-box {
-            /* ✅ MODIFIED: Updated background for better contrast */
-            background: rgba(13, 17, 23, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 15px;
+        .btn-login {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
             transition: all 0.3s ease;
-            height: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-login:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #020409;
+            transform: translateY(-2px);
         }
 
-        .choice-box:hover {
-            background: rgba(32, 201, 151, 0.1);
-            border-color: rgba(32, 201, 151, 0.5);
-            transform: translateY(-5px);
+        /* --- Hero Section --- */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 75vh;
+            text-align: center;
+            padding: 2rem;
+            animation: fadeIn 1s ease-in-out;
+            position: relative;
+            z-index: 1;
         }
-
-        .choice-box h4 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 25px;
+        .hero-section h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: -webkit-linear-gradient(45deg, var(--primary-glow), var(--secondary-glow), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        .btn-custom {
-            background: #20c997;
-            color: #0d1117;
-            font-weight: 600;
-            border: none;
-            padding: 12px 30px;
+        .hero-section p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin-bottom: 2.5rem;
+            font-weight: 500;
+        }
+        #publicTrackForm {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+        }
+        #publicTrackingIdInput {
+            height: 60px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            padding-left: 20px;
             border-radius: 50px;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(32, 201, 151, 0.4);
+        }
+        #publicTrackingIdInput:focus {
+            background-color: rgba(16, 23, 42, 1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.3);
+            color: var(--text-primary);
+        }
+        #publicTrackForm .btn {
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            bottom: 6px;
+            width: 48px;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: 600;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        #publicTrackForm .btn:hover {
+            transform: scale(1.1);
         }
 
-        .btn-custom:hover {
-            background: #29e6b0;
-            color: #0d1117;
-            transform: scale(1.03);
-            box-shadow: 0 0 25px rgba(32, 201, 151, 0.6);
+        /* --- Tracking Results --- */
+        .tracking-results-container {
+            padding-bottom: 5rem;
+            position: relative;
+            z-index: 1;
         }
-
-        .btn-link-custom {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
+        .widget-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-in-out forwards;
+        }
+        .progress-tracker {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+            margin: 40px 0;
+            position: relative;
+            --progress-width: 0%;
+        }
+        .progress-tracker::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background-color: var(--border-color);
+            z-index: 0;
+        }
+        .progress-tracker::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 10%;
+            height: 4px;
+            background-color: var(--accent-color);
+            z-index: 1;
+            width: var(--progress-width);
+            transition: width 0.6s ease-out;
+        }
+        .progress-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .progress-step .icon {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid var(--border-color);
+            transition: all 0.4s ease;
+        }
+        .progress-step .label {
+            display: block;
+            margin-top: 15px;
             font-weight: 500;
-            transition: color 0.3s ease;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: color 0.4s ease;
         }
-
-        .btn-link-custom:hover {
-            color: #20c997;
+        .progress-step.completed .icon {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--bg-color);
         }
+        .progress-step.completed .label {
+            color: var(--text-primary);
+        }
+        .progress-step.active .icon {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--bg-color);
+            animation: pulse 1.5s infinite;
+        }
+        .progress-step.active .label {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        #publicTrackingIdInput::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+        .btn-feedback {
+            background: #ffc107;
+            color: #111;
+            font-weight: 600;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .btn-feedback:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+        }
+        #publicTrackingIdInput::placeholder {
+            color: Gray;
+            opacity: 1;
+        }
+        /* --- Toast --- */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--accent-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            transform: translateX(120%);
+            transition: transform 0.5s ease-in-out;
+        }
+        .toast-notification.show { transform: translateX(0); }
+        .toast-notification.error { border-left-color: #dc3545; }
+        .toast-notification i { font-size: 1.5rem; margin-right: 10px; }
     </style>
 </head>
 <body>
 
 <canvas id="particle-canvas"></canvas>
 
-<div class="portal-container">
-    <div class="content-wrapper">
-        <i class="bi bi-box-seam logo-icon"></i>
-        <div class="title-section">
-            <h1>RouteMax</h1>
-            <p>Efficient Logistics Management Solution</p>
-        </div>
-        <div class="row g-4 justify-content-center">
-            <!-- User Card -->
-            <div class="col-md-6">
-                <div class="choice-box">
-                    <h4>User Portal</h4>
-                    <a href="user-login.html" class="btn btn-custom w-100 mb-3">Login</a>
-                    <a href="register.html" class="btn-link-custom">New User? Register here</a>
-                </div>
-            </div>
+<div id="toast" class="toast-notification">
+    <i id="toast-icon" class="bi"></i>
+    <span id="toast-message"></span>
+</div>
 
-            <!-- Admin Card -->
-            <div class="col-md-6">
-                <div class="choice-box">
-                    <h4>Admin Portal</h4>
-                    <a href="admin-login.html" class="btn btn-custom w-100">Login</a>
-                </div>
-            </div>
-        </div>
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="index.html"><i class="bi bi-box-seam me-2"></i>ROUTEMAX</a>
+        <a href="user-login.html" class="btn btn-login px-3">Login / Register</a>
     </div>
+</nav>
+
+<div class="container">
+    <section class="hero-section">
+        <h1>RouteMax</h1>
+        <p>Efficient Logistics Management Solution</p>
+        <form id="publicTrackForm">
+            <input type="text" class="form-control" id="publicTrackingIdInput" placeholder="TRACK YOUR SHIPMENT" required>
+            <button type="submit" class="btn"><i class="bi bi-arrow-right"></i></button>
+        </form>
+    </section>
+
+    <section class="tracking-results-container">
+        <div id="publicParcelResult" class="d-none">
+            <!-- Tracking results will be injected here by JavaScript -->
+        </div>
+    </section>
 </div>
 
 <script>
+    // --- Public Tracking Logic ---
+    document.getElementById("publicTrackForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const trackingId = document.getElementById("publicTrackingIdInput").value.trim().toUpperCase();
+        if (trackingId) {
+            trackParcelPublicly(trackingId);
+        }
+    });
+
+    async function trackParcelPublicly(trackingId) {
+        const resultContainer = document.getElementById('publicParcelResult');
+        resultContainer.classList.add('d-none');
+        try {
+            const res = await fetch(`http://localhost:8080/api/parcels/track/${trackingId}`);
+            if (!res.ok) throw new Error("Parcel not found. Please check the Tracking ID.");
+            const parcel = await res.json();
+
+            resultContainer.innerHTML = `
+                <div class="widget-card">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <div>
+                            <h5 class="mb-0 text-white">Tracking ID: ${parcel.trackingId}</h5>
+                            <p class="mb-0 text-secondary">Status: <span class="fw-bold" style="color: var(--accent-color);">${parcel.status}</span></p>
+                        </div>
+
+                    </div>
+
+                    <ul class="progress-tracker" id="progress-tracker-${parcel.trackingId}">
+                        <li class="progress-step" data-step="1">
+                            <div class="icon"><i class="bi bi-box-seam"></i></div>
+                            <div class="label">Created</div>
+                        </li>
+                        <li class="progress-step" data-step="2">
+                            <div class="icon"><i class="bi bi-send-check"></i></div>
+                            <div class="label">Dispatched</div>
+                        </li>
+                        <li class="progress-step" data-step="3">
+                            <div class="icon"><i class="bi bi-truck"></i></div>
+                            <div class="label">In Transit</div>
+                        </li>
+                        <li class="progress-step" data-step="4">
+                            <div class="icon"><i class="bi bi-house-door"></i></div>
+                            <div class="label">Out for Delivery</div>
+                        </li>
+                        <li class="progress-step" data-step="5">
+                            <div class="icon"><i class="bi bi-patch-check"></i></div>
+                            <div class="label">Delivered</div>
+                        </li>
+                    </ul>
+
+                    <div id="publicFeedbackContainer" class="text-center mt-5"></div>
+                </div>
+            `;
+            updatePublicProgressTracker(parcel.status, parcel.trackingId);
+
+            const feedbackContainer = document.getElementById('publicFeedbackContainer');
+            if (parcel.status === 'Delivered') {
+                feedbackContainer.innerHTML = `<button class="btn btn-feedback" onclick="redirectToLoginForFeedback('${parcel.trackingId}')">Rate Your Delivery Experience</button>`;
+            }
+
+            resultContainer.classList.remove('d-none');
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        } catch (err) {
+            showToast(err.message, true);
+        }
+    }
+
+    function updatePublicProgressTracker(status, trackingId) {
+        const trackerElement = document.getElementById(`progress-tracker-${trackingId}`);
+        if (!trackerElement) return;
+
+        const steps = trackerElement.querySelectorAll('.progress-step');
+        const statusMap = { 'Created': 1, 'Dispatched': 2, 'In Transit': 3, 'At Warehouse': 3, 'Out for Delivery': 4, 'Delivered': 5 };
+        const currentStepIndex = statusMap[status] || 0;
+
+        // ✅ CORRECTED LOGIC FOR THE PROGRESS LINE
+        // The total width of the line is 80% of the container (from left: 10% to right: 10%).
+        // There are 4 segments. So each segment is 20% of the total container width.
+        // The calculation is now (currentStep - 1) * 20% of the container, which translates to
+        // ((currentStep - 1) / 5) * 100 to get the percentage of the line's own container (the 80% part).
+        // Let's simplify: the total line is 4 segments. The width is (completed_segments / total_segments).
+        const progressPercentage = currentStepIndex > 1 ? ((currentStepIndex - 1) / 4) * 100 : 0;
+
+        // When delivered (step 5), the line should be 100% full.
+        // The previous calculation for step 5 was ((5-1)/4)*100 = 100. This was correct.
+        // The issue is the visual placement. The line is set from left: 10% to right: 10%, meaning it spans 80% of the width.
+        // Let's adjust the CSS `right` property of the colored line instead.
+        const progressRightPercentage = currentStepIndex < 5 ? 100 - (((currentStepIndex-1)/4)*80 + 10) : 10;
+
+        // Let's stick to the simpler CSS variable method. The issue is the `right: 10%` on the ::before pseudo-element.
+        // The colored line should span from left: 10% up to the correct point.
+        // Total span is 80%.
+        // Step 2 (Dispatched) = 1/4 of 80% = 20% width.
+        // Step 3 (In Transit) = 2/4 of 80% = 40% width.
+        // Step 4 (Out for Delivery) = 3/4 of 80% = 60% width.
+        // Step 5 (Delivered) = 4/4 of 80% = 80% width.
+        const totalLineWidthPercent = 80;
+        const widthPercentage = currentStepIndex > 1 ? ((currentStepIndex - 1) / 4) * totalLineWidthPercent : 0;
+
+        // The CSS variable `--progress-width` is a percentage of the parent element's width.
+        // The parent is the `<ul>`. The line starts at 10% and has a total possible width of 80%.
+        // So the width of the colored line should be a percentage of that 80%.
+        // Let's re-evaluate the CSS. `left: 10%` and `width: var(--progress-width)` on the `::after`.
+        // This means the width is relative to the `<ul>`.
+        // If we want the line to stop at the last icon, its total width should be 80%.
+        const finalWidth = currentStepIndex > 1 ? ((currentStepIndex - 1) / 4) * 80 : 0;
+        trackerElement.style.setProperty('--progress-width', `${finalWidth}%`);
+
+        steps.forEach((step, index) => {
+            step.classList.remove('active', 'completed');
+            if (index < currentStepIndex - 1) {
+                step.classList.add('completed');
+            } else if (index === currentStepIndex - 1) {
+                step.classList.add('active');
+            }
+        });
+    }
+
+    function redirectToLoginForFeedback(trackingId) {
+        localStorage.setItem('trackingIdForFeedback', trackingId);
+        window.location.href = 'user-login.html';
+    }
+
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const toastIcon = document.getElementById('toast-icon');
+
+        toastMessage.textContent = message;
+        toast.className = 'toast-notification';
+        toastIcon.className = 'bi';
+
+        if (isError) {
+            toast.classList.add('error');
+            toastIcon.classList.add('bi-exclamation-triangle-fill');
+        } else {
+            toastIcon.classList.add('bi-check-circle-fill');
+        }
+
+        toast.classList.add('show');
+        setTimeout(() => { toast.classList.remove('show'); }, 4000);
+    }
+
+    // --- Animated Particle Network Background Script ---
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     let particlesArray;
 
     class Particle {
-        constructor(x, y, directionX, directionY, size) {
+        constructor(x, y, directionX, directionY, size, color) {
             this.x = x;
             this.y = y;
             this.directionX = directionX;
             this.directionY = directionY;
             this.size = size;
+            this.color = color;
         }
-
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-            ctx.fillStyle = 'rgba(32, 201, 151, 0.8)';
+            ctx.fillStyle = this.color;
             ctx.fill();
         }
-
         update() {
-            if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
-            if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+            if (this.x > canvas.width || this.x < 0) {
+                this.directionX = -this.directionX;
+            }
+            if (this.y > canvas.height || this.y < 0) {
+                this.directionY = -this.directionY;
+            }
             this.x += this.directionX;
             this.y += this.directionY;
             this.draw();
@@ -196,12 +499,32 @@
         particlesArray = [];
         let numberOfParticles = (canvas.height * canvas.width) / 9000;
         for (let i = 0; i < numberOfParticles; i++) {
-            let size = (Math.random() * 2) + 1;
-            let x = (Math.random() * (innerWidth - size * 2) + size);
-            let y = (Math.random() * (innerHeight - size * 2) + size);
-            let directionX = (Math.random() * 0.4) - 0.2;
-            let directionY = (Math.random() * 0.4) - 0.2;
-            particlesArray.push(new Particle(x, y, directionX, directionY, size));
+            let size = (Math.random() * 2.5) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * .4) - .2;
+            let directionY = (Math.random() * .4) - .2;
+            let color = Math.random() > 0.5 ? 'rgba(160, 51, 255, 0.8)' : 'rgba(0, 169, 255, 0.8)';
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
+    }
+
+    function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+                let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                    ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                    opacityValue = 1 - (distance / 20000);
+                    ctx.strokeStyle = `rgba(160, 51, 255, ${opacityValue})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                    ctx.stroke();
+                }
+            }
         }
     }
 
@@ -212,24 +535,6 @@
             particlesArray[i].update();
         }
         connect();
-    }
-
-    function connect() {
-        let opacityValue = 1;
-        for (let a = 0; a < particlesArray.length; a++) {
-            for (let b = a; b < particlesArray.length; b++) {
-                let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
-                if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                    opacityValue = 1 - (distance / 20000);
-                    ctx.strokeStyle = `rgba(32, 201, 151, ${opacityValue})`;
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                    ctx.stroke();
-                }
-            }
-        }
     }
 
     window.addEventListener('resize', () => {

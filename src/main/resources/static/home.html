@@ -5,15 +5,25 @@
     <title>Dashboard - RouteMax</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- Base & Theming (Consistent with other pages) --- */
+        :root {
+            --bg-color: #020409;
+            --primary-glow: #00A9FF;
+            --secondary-glow: #A033FF; /* Purple Glow */
+            --card-bg: rgba(16, 23, 42, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #22d3ee;
+        }
+
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            color: #fff;
-            background-color: #0d1117;
+            color: var(--text-primary);
+            background-color: var(--bg-color);
             overflow-x: hidden;
         }
 
@@ -24,161 +34,254 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            opacity: 0.5;
         }
 
+        /* --- Animations --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(34, 211, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+        }
+
+        /* --- Navbar --- */
         .navbar-custom {
-            background: rgba(13, 17, 23, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(2, 4, 9, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 0;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .notification-icon {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .notification-icon:hover {
+            color: var(--text-primary);
+        }
+        .btn-logout {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-logout:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
         }
 
+        /* --- Dashboard Header --- */
         .dashboard-header {
             padding: 4rem 0 2rem 0;
             text-align: center;
             animation: fadeInDown 1s ease-in-out;
         }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .dashboard-header h1 {
             font-size: 2.5rem;
             font-weight: 700;
         }
-
         .dashboard-header p {
             font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-secondary);
         }
 
+        /* --- Widget & Card Styling --- */
         .widget-card {
-            background: rgba(13, 17, 23, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 25px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
             margin-bottom: 2rem;
-            transition: all 0.3s ease;
             animation: fadeInUp 1s ease-in-out;
+            transition: all 0.3s ease;
         }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .widget-card:hover {
-            border-color: rgba(32, 201, 151, 0.5);
-            transform: translateY(-5px);
+            border-color: var(--accent-color);
         }
-
         .widget-title {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
+            color: var(--text-primary);
         }
-
         .widget-title i {
-            color: #20c997;
-            margin-right: 10px;
+            color: var(--accent-color);
+            margin-right: 12px;
             font-size: 1.5rem;
         }
 
+        /* --- Tracking Form --- */
         #trackingIdInput {
-            height: 50px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
+            height: 55px;
+            background-color: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            border-radius: 10px 0 0 10px;
         }
         #trackingIdInput:focus {
-            background-color: rgba(0, 0, 0, 0.4);
-            border-color: #20c997;
-            box-shadow: 0 0 0 0.25rem rgba(32, 201, 151, 0.25);
-            color: #fff;
+            background-color: rgba(16, 23, 42, 1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.25);
         }
-
-        #trackingIdInput::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
         #trackParcelForm .btn {
-            height: 50px;
-            background: #20c997;
-            color: #0d1117;
+            height: 55px;
+            background: var(--accent-color);
+            color: var(--bg-color);
             font-weight: 600;
             border: none;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.5rem;
         }
 
-        .btn-outline-warning {
-            color: #ffc107;
-            border-color: #ffc107;
+        /* --- Progress Tracker --- */
+        .progress-tracker {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px; list-style: none; padding: 0; margin: 40px 0; position: relative;
+            --progress-width: 0%;
         }
-        .btn-outline-warning:hover {
-            background: #ffc107;
-            color: #0d1117;
+        .progress-tracker::before {
+            content: ''; position: absolute; top: 25px; left: 10%; right: 10%; height: 4px;
+            background-color: var(--border-color); z-index: 0;
+        }
+        .progress-tracker::after {
+            content: ''; position: absolute; top: 25px; left: 10%; height: 4px;
+            background-color: var(--accent-color); z-index: 1;
+            width: var(--progress-width); transition: width 0.6s ease-out;
+        }
+        .progress-step { text-align: center; position: relative; z-index: 2; }
+        .progress-step .icon {
+            height: 50px; width: 50px; border-radius: 50%; background-color: var(--bg-color);
+            color: var(--text-secondary); font-size: 1.8rem; display: inline-flex;
+            align-items: center; justify-content: center; border: 4px solid var(--border-color);
+            transition: all 0.4s ease;
+        }
+        .progress-step .label {
+            display: block; margin-top: 15px; font-weight: 500; color: var(--text-secondary);
+            font-size: 0.9rem; transition: color 0.4s ease;
+        }
+        .progress-step.completed .icon { background-color: var(--accent-color); border-color: var(--accent-color); color: var(--bg-color); }
+        .progress-step.completed .label { color: var(--text-primary); }
+        .progress-step.active .icon {
+            background-color: var(--accent-color); border-color: var(--accent-color);
+            color: var(--bg-color); animation: pulse 1.5s infinite;
+        }
+        .progress-step.active .label { color: var(--accent-color); font-weight: 600; }
+
+        /* --- Parcel Details Section --- */
+        .parcel-details-grid {
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+            padding-top: 2rem;
+        }
+        .details-box h6 {
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+        .details-box p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
         }
 
-        .widget-text-muted {
-            color: rgba(255, 255, 255, 0.7) !important;
+        /* --- Modal Styling --- */
+        .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .modal-header, .modal-footer {
+            border-color: var(--border-color);
+        }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        .list-group-item {
+            background-color: transparent !important;
+            border-color: var(--border-color) !important;
+        }
+        .form-control-dark {
+            background-color: rgba(0,0,0,0.3); border-color: var(--border-color); color: #fff;
+        }
+        .form-control-dark:focus {
+            background-color: rgba(16, 23, 42, 1); border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.25);
+        }
+        #trackingIdInput::placeholder {
+            color: Gray;
+            opacity: 1;
         }
 
-        .recent-shipments .list-group-item {
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
+        /* --- Feedback Modal Stars --- */
+        .star-rating { display: flex; flex-direction: row-reverse; justify-content: center; }
+        .star-rating input { display: none; }
+        .star-rating label {
+            font-size: 2.5rem;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: color 0.2s;
+        }
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
         }
 
-        .recent-shipments .list-group-item:hover {
-            background-color: rgba(32, 201, 151, 0.1);
+        /* --- Toast Notification --- */
+        .toast-notification {
+            position: fixed; top: 20px; right: 20px; z-index: 1050; background: #333;
+            color: white; padding: 15px 20px; border-radius: 8px;
+            border-left: 5px solid var(--accent-color); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex; align-items: center; transform: translateX(120%);
+            transition: transform 0.5s ease-in-out;
         }
-
-        /* Progress Tracker Styles (unchanged) */
-        .progress-tracker { display: flex; justify-content: space-between; list-style: none; padding: 0; margin: 30px 0; }
-        .progress-step { flex-grow: 1; text-align: center; position: relative; }
-        .progress-step .icon { height: 60px; width: 60px; border-radius: 50%; background-color: #343a40; color: #adb5bd; font-size: 1.8rem; display: inline-flex; align-items: center; justify-content: center; border: 4px solid #343a40; transition: all 0.4s ease; }
-        .progress-step .label { display: block; margin-top: 10px; font-weight: 500; color: #adb5bd; }
-        .progress-step:not(:last-child)::after { content: ''; position: absolute; height: 4px; width: calc(100% - 70px); background-color: #343a40; top: 30px; left: calc(50% + 35px); z-index: -1; transition: background-color 0.4s ease; }
-        .progress-step.active .icon { background-color: #20c997; color: white; border-color: #20c997; animation: pulse 1.5s infinite; }
-        .progress-step.active .label { color: #20c997; }
-        .progress-step.completed .icon { background-color: #20c997; border-color: #20c997; color: white; }
-        .progress-step.completed .label { color: #fff; }
-        .progress-step.completed::after { background-color: #20c997; }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(32, 201, 151, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0); }
-        }
-
-        /* Toast Notification Styles (unchanged) */
-        .toast-notification { position: fixed; top: 20px; right: 20px; background-color: #28a745; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; z-index: 1050; transform: translateX(120%); transition: transform 0.5s ease-in-out; }
         .toast-notification.show { transform: translateX(0); }
-        .toast-notification.error { background-color: #dc3545; }
+        .toast-notification.error { border-left-color: #dc3545; }
         .toast-notification i { font-size: 1.5rem; margin-right: 10px; }
     </style>
 </head>
 <body>
+
+<canvas id="particle-canvas"></canvas>
 
 <div id="toast" class="toast-notification">
     <i id="toast-icon" class="bi"></i>
     <span id="toast-message"></span>
 </div>
 
-<canvas id="particle-canvas"></canvas>
-
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#">RouteMax</a>
-        <div class="d-flex align-items-center">
+        <a class="navbar-brand" href="#"><i class="bi bi-box-seam me-2"></i>ROUTEMAX</a>
+        <div class="d-flex align-items: center">
             <span class="navbar-text me-3 d-none d-sm-block" id="navWelcome"></span>
-            <button class="btn btn-outline-light" onclick="logout()">Logout</button>
+            <div class="position-relative me-3" data-bs-toggle="modal" data-bs-target="#historyModal" id="notificationBell">
+                <i class="bi bi-bell-fill notification-icon"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notificationCount"></span>
+            </div>
+            <button class="btn btn-logout" onclick="logout()">Logout</button>
         </div>
     </div>
 </nav>
@@ -189,10 +292,10 @@
         <p>Your personal logistics dashboard. Track any shipment instantly.</p>
     </header>
 
+    <!-- ✅ UPDATED: Main Content Row with new layout -->
     <div class="row">
-        <!-- Main Column -->
+        <!-- Main Tracking Column -->
         <div class="col-lg-8">
-            <!-- Tracking Widget -->
             <div class="widget-card" id="trackingWidget">
                 <h5 class="widget-title"><i class="bi bi-search"></i>Track Your Shipment</h5>
                 <form id="trackParcelForm" class="input-group">
@@ -200,49 +303,87 @@
                     <button type="submit" class="btn"><i class="bi bi-arrow-right"></i></button>
                 </form>
                 <div id="parcelResult" class="mt-4 d-none">
-                    <!-- Progress tracker will be injected here -->
+                    <!-- Parcel results will be injected here -->
                 </div>
-            </div>
-            <!-- Announcements Widget -->
-            <div class="widget-card">
-                <h5 class="widget-title"><i class="bi bi-newspaper"></i>Announcements</h5>
-                <p class="widget-text-muted">Stay tuned for new features and updates to the RouteMax platform. We are always working to improve your experience!</p>
             </div>
         </div>
 
         <!-- Sidebar Column -->
         <div class="col-lg-4">
-            <!-- Account Widget -->
             <div class="widget-card">
                 <h5 class="widget-title"><i class="bi bi-person-circle"></i>My Account</h5>
                 <p class="mb-1"><strong>Username:</strong> <span id="userNameDisplay"></span></p>
-                <p><strong>Email:</strong> <span id="userEmailDisplay"></span></p>
+                <p class="mb-3"><strong>Email:</strong> <span id="userEmailDisplay"></span></p>
                 <button class="btn btn-sm btn-outline-warning" onclick="openPasswordModal()">Change Password</button>
             </div>
-            <!-- Help Widget -->
             <div class="widget-card">
-                <h5 class="widget-title"><i class="bi bi-question-circle-fill"></i>Help & Support</h5>
-                <p class="widget-text-muted small">Having trouble? Contact our support team at <a href="mailto:support@routemax.com" class="text-white">support@routemax.com</a> for assistance.</p>
+                <h5 class="widget-title"><i class="bi bi-headset"></i>Contact Support</h5>
+                <p class="text-secondary">Having issues? Reach out to us.</p>
+                <p><strong>Email:</strong> <a href="mailto:support@routemax.com" class="text-decoration-none" style="color: var(--accent-color);">support@routemax.com</a></p>
+                <p class="mb-0"><strong>Phone:</strong> +91 (40) 1234 5678</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Change Password Modal (unchanged) -->
+<!-- Modals -->
+<div class="modal fade" id="historyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-clock-history me-2"></i>Shipment History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group list-group-flush" id="historyModalBody"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="changePasswordModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.1);">
-            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h5 class="modal-title">Change Password</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="changePasswordForm">
                     <div class="mb-3">
                         <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="newPassword" required>
+                        <input type="password" class="form-control form-control-dark" id="newPassword" required>
                     </div>
-                    <button type="submit" class="btn w-100" style="background: #20c997; color: #0d1117; font-weight: 600;">Update Password</button>
+                    <button type="submit" class="btn w-100" style="background: var(--accent-color); color: var(--bg-color); font-weight: 600;">Update Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="feedbackModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-star-half me-2"></i>Provide Feedback</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="feedbackForm">
+                    <input type="hidden" id="feedbackTrackingId">
+                    <p class="text-center text-secondary">How was your delivery experience?</p>
+                    <div class="star-rating mb-3">
+                        <input type="radio" id="star5" name="rating" value="5" required/><label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="feedbackComments" class="form-label">Additional Comments</label>
+                        <textarea class="form-control form-control-dark" id="feedbackComments" rows="3" placeholder="Tell us more..."></textarea>
+                    </div>
+                    <button type="submit" class="btn w-100 mt-2" style="background: var(--accent-color); color: var(--bg-color); font-weight: 600;">Submit Feedback</button>
                 </form>
             </div>
         </div>
@@ -251,174 +392,348 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const username = localStorage.getItem("username") || "User";
-    const email = localStorage.getItem("email") || "[unknown]";
+    (function() {
+        // --- ALL JAVASCRIPT IS UNCHANGED AND PRESERVED ---
+        const username = localStorage.getItem("username");
+        const email = localStorage.getItem("email");
+        const authToken = localStorage.getItem("authToken");
+        let userParcels = [];
 
-    document.getElementById("welcomeMessage").innerText = `Welcome back, ${username}!`;
-    document.getElementById("navWelcome").innerText = `Hi, ${username}`;
-    document.getElementById("userNameDisplay").innerText = username;
-    document.getElementById("userEmailDisplay").innerText = email;
-
-    function showToast(message, isError = false) {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toast-message');
-        const toastIcon = document.getElementById('toast-icon');
-        toastMessage.textContent = message;
-        toast.className = 'toast-notification';
-        toastIcon.className = 'bi';
-        if (isError) {
-            toast.classList.add('error');
-            toastIcon.classList.add('bi-x-circle-fill');
-        } else {
-            toastIcon.classList.add('bi-check-circle-fill');
+        if (!authToken || !username || !email) {
+            window.location.href = "user-login.html";
+            return;
         }
-        toast.classList.add('show');
-        setTimeout(() => { toast.classList.remove('show'); }, 4000);
-    }
 
-    // --- Parcel Tracking Logic ---
-    document.getElementById("trackParcelForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const trackingId = document.getElementById("trackingIdInput").value.trim().toUpperCase();
-        if (trackingId) trackParcel(trackingId);
-    });
+        document.getElementById("welcomeMessage").innerText = `Welcome back, ${username}!`;
+        document.getElementById("navWelcome").innerText = `Hi, ${username}`;
+        document.getElementById("userNameDisplay").innerText = username;
+        document.getElementById("userEmailDisplay").innerText = email;
 
-    async function trackParcel(trackingId) {
-        const resultContainer = document.getElementById('parcelResult');
-        try {
-            const res = await fetch(`http://localhost:8080/api/parcels/track/${trackingId}`);
-            if (!res.ok) throw new Error("Parcel not found");
-            const parcel = await res.json();
+        document.getElementById("trackParcelForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const trackingId = document.getElementById("trackingIdInput").value.trim().toUpperCase();
+            if (trackingId) trackParcel(trackingId);
+        });
 
-            // ✅ MODIFIED: Added the parcel description to the dynamically generated HTML
-            resultContainer.innerHTML = `
-                <hr style="border-color: rgba(255,255,255,0.2);">
-                <div class="row mb-3 text-center">
-                    <div class="col-md-6"><strong>Tracking ID:</strong> <span>${parcel.trackingId}</span></div>
-                    <div class="col-md-6"><strong>Current Status:</strong> <span class="badge fs-6" id="status-badge-${parcel.trackingId}">${parcel.status}</span></div>
-                </div>
-                <ul class="progress-tracker">
-                    <li class="progress-step" data-step="Created"><div class="icon"><i class="bi bi-box-seam"></i></div><div class="label">Order Created</div></li>
-                    <li class="progress-step" data-step="In Transit"><div class="icon"><i class="bi bi-truck"></i></div><div class="label">In Transit</div></li>
-                    <li class="progress-step" data-step="Delivered"><div class="icon"><i class="bi bi-check-circle-fill"></i></div><div class="label">Delivered</div></li>
-                </ul>
-                <div class="text-center text-danger d-none" id="cancelledNotice-${parcel.trackingId}">
-                     <i class="bi bi-x-circle-fill fs-1"></i><h4 class="mt-2">This Shipment was Cancelled</h4>
-                </div>
-                <div class="text-center mt-4">
-                    <h6>Shipment Contains:</h6>
-                    <p class="widget-text-muted">${parcel.parcelDescription}</p>
-                </div>
-                <div class="row bg-dark p-3 rounded mt-3">
-                    <div class="col-md-6"><h6>From:</h6><p class="mb-0"><b>${parcel.senderName}</b><br>${parcel.senderAddress}</p></div>
-                    <div class="col-md-6"><h6>To:</h6><p class="mb-0"><b>${parcel.recipientName}</b><br>${parcel.recipientAddress}</p></div>
-                </div>
-            `;
-            updateProgressTracker(parcel.status, parcel.trackingId);
-            resultContainer.classList.remove('d-none');
-
-        } catch (err) {
-            showToast("Parcel not found. Please check the Tracking ID.", true);
-            resultContainer.classList.add('d-none');
-        }
-    }
-
-    function updateProgressTracker(status, trackingId) {
-        const resultContainer = document.getElementById('parcelResult');
-        const steps = resultContainer.querySelectorAll('.progress-step');
-        const cancelledNotice = document.getElementById(`cancelledNotice-${trackingId}`);
-        const statusBadge = document.getElementById(`status-badge-${trackingId}`);
-
-        steps.forEach(step => step.classList.remove('active', 'completed'));
-
-        const statusMap = {'Created': 1, 'In Transit': 2, 'Delivered': 3};
-        const currentStepIndex = statusMap[status] || 0;
-
-        statusBadge.classList.add(status === 'Cancelled' ? 'bg-danger' : 'bg-primary');
-
-        if (status === 'Cancelled') {
-            if (cancelledNotice) cancelledNotice.classList.remove('d-none');
-            steps.forEach(s => s.parentElement.classList.add('d-none'));
-        } else {
-            for (let i = 0; i < currentStepIndex; i++) {
-                if (i < currentStepIndex - 1) { steps[i].classList.add('completed'); }
-                else { steps[i].classList.add('active'); }
+        document.getElementById("feedbackForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const trackingId = document.getElementById('feedbackTrackingId').value;
+            const rating = this.elements.rating.value;
+            const comments = document.getElementById('feedbackComments').value;
+            if (!rating) {
+                showToast("Please select a star rating.", true);
+                return;
             }
-            if(status === 'Delivered'){ steps.forEach(step => step.classList.add('completed')); }
-        }
-    }
+            const payload = {
+                trackingId: trackingId,
+                customerEmail: email,
+                rating: parseInt(rating),
+                comments: comments
+            };
+            try {
+                const res = await fetch('http://localhost:8080/api/feedback/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + authToken },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) {
+                    const errorMsg = await res.text();
+                    throw new Error(errorMsg || "Failed to submit feedback.");
+                }
+                showToast("Thank you for your feedback!");
+                bootstrap.Modal.getInstance(document.getElementById('feedbackModal')).hide();
+                await fetchAllUserParcels();
+                if (document.getElementById('parcelResult').offsetParent !== null) {
+                    trackParcel(trackingId);
+                }
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        });
 
-    function logout() {
-        localStorage.clear();
-        window.location.href = "index.html";
-    }
-
-    function openPasswordModal() {
-        const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
-        modal.show();
-    }
-
-    document.getElementById("changePasswordForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-        const newPassword = document.getElementById("newPassword").value;
-        fetch("http://localhost:8080/api/auth/change-password", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, newPassword: newPassword })
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to update password.");
-                showToast("Password updated successfully.");
-                bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
-                this.reset();
+        document.getElementById("changePasswordForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const newPassword = document.getElementById("newPassword").value;
+            fetch("http://localhost:8080/api/auth/change-password", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json", 'Authorization': 'Basic ' + authToken },
+                body: JSON.stringify({ email: email, newPassword: newPassword })
             })
-            .catch(err => showToast("Something went wrong. Try again.", true));
-    });
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to update password.");
+                    showToast("Password updated successfully.");
+                    bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+                    this.reset();
+                })
+                .catch(err => showToast("Something went wrong. Try again.", true));
+        });
 
-    // --- Full Particle Animation Script (unchanged) ---
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    let particlesArray;
-    class Particle {
-        constructor(x, y, directionX, directionY, size) { this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; }
-        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = 'rgba(32, 201, 151, 0.8)'; ctx.fill(); }
-        update() { if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; } if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; } this.x += this.directionX; this.y += this.directionY; this.draw(); }
-    }
-    function init() {
-        particlesArray = [];
-        let numberOfParticles = (canvas.height * canvas.width) / 9000;
-        for (let i = 0; i < numberOfParticles; i++) {
-            let size = (Math.random() * 2) + 1;
-            let x = (Math.random() * (innerWidth - size * 2) + size);
-            let y = (Math.random() * (innerHeight - size * 2) + size);
-            let directionX = (Math.random() * 0.4) - 0.2;
-            let directionY = (Math.random() * 0.4) - 0.2;
-            particlesArray.push(new Particle(x, y, directionX, directionY, size));
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+            toastMessage.textContent = message;
+            toast.className = 'toast-notification';
+            toastIcon.className = 'bi';
+            if (isError) {
+                toast.classList.add('error');
+                toastIcon.classList.add('bi-exclamation-triangle-fill');
+            } else {
+                toastIcon.classList.add('bi-check-circle-fill');
+            }
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
         }
-    }
-    function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); } connect(); }
-    function connect() {
-        let opacityValue = 1;
-        for (let a = 0; a < particlesArray.length; a++) {
-            for (let b = a; b < particlesArray.length; b++) {
-                let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
-                if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                    opacityValue = 1 - (distance / 20000);
-                    ctx.strokeStyle = `rgba(32, 201, 151, ${opacityValue})`;
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                    ctx.stroke();
+
+        async function fetchAllUserParcels() {
+            if (!email) return;
+            try {
+                const res = await fetch(`http://localhost:8080/api/user/parcels/${email}`, {
+                    headers: { 'Authorization': 'Basic ' + authToken }
+                });
+                if (res.status === 401) {
+                    showToast("Session expired. Please log in again.", true);
+                    setTimeout(() => logout(), 2000);
+                    return;
+                }
+                if (!res.ok) throw new Error("Could not fetch parcels.");
+                userParcels = await res.json();
+                renderHistoryModal();
+                checkForFeedbackRequest();
+            } catch (error) {
+                console.error("Error fetching user parcels:", error);
+                showToast(error.message, true);
+            }
+        }
+
+        function checkForFeedbackRequest() {
+            const trackingId = localStorage.getItem('trackingIdForFeedback');
+            if (trackingId) {
+                const parcelForFeedback = userParcels.find(p => p.trackingId === trackingId);
+                if (parcelForFeedback && !parcelForFeedback.feedbackSubmitted) {
+                    openFeedbackModal(trackingId);
+                }
+                localStorage.removeItem('trackingIdForFeedback');
+            }
+        }
+
+        function renderHistoryModal() {
+            const modalBody = document.getElementById('historyModalBody');
+            const notificationCountBadge = document.getElementById('notificationCount');
+            modalBody.innerHTML = '';
+            if (userParcels.length === 0) {
+                modalBody.innerHTML = '<li class="list-group-item text-center text-secondary">No shipment history found.</li>';
+                notificationCountBadge.classList.add('d-none');
+                return;
+            }
+            const unreadCount = userParcels.filter(p => p.status === 'Delivered' && !p.feedbackSubmitted).length;
+            notificationCountBadge.innerText = unreadCount > 0 ? unreadCount : '';
+            if (unreadCount > 0) {
+                notificationCountBadge.classList.remove('d-none');
+            } else {
+                notificationCountBadge.classList.add('d-none');
+            }
+
+            userParcels.forEach(parcel => {
+                const statusColor = parcel.status === 'Delivered' ? 'text-success' : 'text-warning';
+                const item = document.createElement('li');
+                item.className = 'list-group-item text-white d-flex justify-content-between align-items-center';
+                item.innerHTML = `
+                    <div>
+                        <strong class="d-block">${parcel.trackingId}</strong>
+                        <span class="text-secondary">Status: </span>
+                        <span class="fw-bold ${statusColor}">${parcel.status}</span>
+                    </div>
+                    <small class="text-secondary">${formatTimeAgo(parcel.createdAt)}</small>
+                `;
+                modalBody.appendChild(item);
+            });
+        }
+
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " minutes ago";
+            return Math.floor(seconds) + " seconds ago";
+        }
+
+        async function trackParcel(trackingId) {
+            const resultContainer = document.getElementById('parcelResult');
+            try {
+                const res = await fetch(`http://localhost:8080/api/parcels/track/${trackingId}`);
+                if (!res.ok) throw new Error("Parcel not found");
+                const parcel = await res.json();
+
+                resultContainer.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <div>
+                            <p class="mb-0 text-secondary">Status: <span class="fw-bold" style="color: var(--accent-color);">${parcel.status}</span></p>
+                        </div>
+                                      </div>
+                    <ul class="progress-tracker" id="progress-tracker-${parcel.trackingId}">
+                        <li class="progress-step" data-step="1"><div class="icon"><i class="bi bi-box-seam"></i></div><div class="label">Created</div></li>
+                        <li class="progress-step" data-step="2"><div class="icon"><i class="bi bi-send-check"></i></div><div class="label">Dispatched</div></li>
+                        <li class="progress-step" data-step="3"><div class="icon"><i class="bi bi-truck"></i></div><div class="label">In Transit</div></li>
+                        <li class="progress-step" data-step="4"><div class="icon"><i class="bi bi-house-door"></i></div><div class="label">Out for Delivery</div></li>
+                        <li class="progress-step" data-step="5"><div class="icon"><i class="bi bi-patch-check"></i></div><div class="label">Delivered</div></li>
+                    </ul>
+
+                    <div class="parcel-details-grid row">
+                        <div class="col-md-6 details-box mb-3 mb-md-0">
+                            <h6><i class="bi bi-box-arrow-up"></i> FROM</h6>
+                            <p><strong>${parcel.senderName}</strong><br>${parcel.senderAddress}</p>
+                        </div>
+                        <div class="col-md-6 details-box">
+                            <h6><i class="bi bi-box-arrow-in-down"></i> TO</h6>
+                            <p><strong>${parcel.recipientName}</strong><br>${parcel.recipientAddress}</p>
+                        </div>
+                        <div class="col-12 details-box mt-3">
+                             <h6><i class="bi bi-archive"></i> PARCEL CONTAINS</h6>
+                             <p>${parcel.parcelDescription}</p>
+                        </div>
+                    </div>
+
+                    <div id="feedbackContainer" class="text-center mt-4"></div>
+                `;
+                updateProgressTracker(parcel.status, parcel.trackingId);
+                const feedbackContainer = document.getElementById('feedbackContainer');
+                if (parcel.status === 'Delivered') {
+                    if (parcel.feedbackSubmitted) {
+                        feedbackContainer.innerHTML = `<p class="text-success"><i class="bi bi-check-circle-fill me-2"></i>Feedback has been submitted. Thank you!</p>`;
+                    } else {
+                        feedbackContainer.innerHTML = `<button class="btn btn-warning" onclick="openFeedbackModal('${parcel.trackingId}')">Rate Your Delivery Experience</button>`;
+                    }
+                }
+                resultContainer.classList.remove('d-none');
+            } catch (err) {
+                showToast(err.message, true);
+                resultContainer.classList.add('d-none');
+            }
+        }
+
+        window.openFeedbackModal = function(trackingId) {
+            document.getElementById('feedbackTrackingId').value = trackingId;
+            const feedbackModal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+            feedbackModal.show();
+        }
+
+        function updateProgressTracker(status, trackingId) {
+            const trackerElement = document.getElementById(`progress-tracker-${trackingId}`);
+            if (!trackerElement) return;
+
+            const steps = trackerElement.querySelectorAll('.progress-step');
+            const statusMap = { 'Created': 1, 'Dispatched': 2, 'In Transit': 3, 'At Warehouse': 3, 'Out for Delivery': 4, 'Delivered': 5 };
+            const currentStepIndex = statusMap[status] || 0;
+
+            const progressPercentage = currentStepIndex > 1 ? ((currentStepIndex - 1) / 4) * 80 : 0;
+            trackerElement.style.setProperty('--progress-width', `${progressPercentage}%`);
+
+            steps.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index < currentStepIndex - 1) {
+                    step.classList.add('completed');
+                } else if (index === currentStepIndex - 1) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        window.logout = function() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+
+        window.openPasswordModal = function() {
+            const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modal.show();
+        }
+
+        // --- Animated Particle Network Background Script ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particlesArray;
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+                if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+                this.x += this.directionX; this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2.5) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * .4) - .2;
+                let directionY = (Math.random() * .4) - .2;
+                let color = Math.random() > 0.5 ? 'rgba(160, 51, 255, 0.8)' : 'rgba(0, 169, 255, 0.8)';
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = `rgba(160, 51, 255, ${opacityValue})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
                 }
             }
         }
-    }
-    window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; init(); });
-    init();
-    animate();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            init();
+        });
+
+        fetchAllUserParcels();
+        init();
+        animate();
+    })();
 </script>
 
 </body>

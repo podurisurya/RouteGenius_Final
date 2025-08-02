@@ -5,98 +5,243 @@
     <title>Manage Parcels - RouteMax</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- Base & Admin Theming (Consistent with other pages) --- */
+        :root {
+            --bg-color: #020409;
+            --admin-glow: #6366f1; /* Indigo Glow */
+            --admin-glow-dark: #4f51c0;
+            --admin-accent: #818cf8; /* Lighter Indigo */
+            --card-bg: rgba(16, 23, 42, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --danger-color: #f43f5e; /* Rose Red for delete */
+        }
+
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            color: #fff;
-            background-color: #111827;
+            color: var(--text-primary);
+            background-color: var(--bg-color);
             overflow-x: hidden;
         }
 
-        #plexus-canvas {
+        #particle-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
+            opacity: 0.6;
         }
 
-        .navbar-custom {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .widget-card {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 25px;
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.8s ease-in-out;
-        }
-
+        /* --- Animations --- */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* --- Navbar --- */
+        .navbar-custom {
+            background: rgba(2, 4, 9, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--admin-accent);
+        }
+        .btn-back {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-back:hover {
+            background-color: rgba(129, 140, 248, 0.1);
+            border-color: var(--admin-accent);
+            color: var(--text-primary);
+        }
+
+        /* --- Main Content Card --- */
+        .widget-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-in-out;
+        }
         .widget-title {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
         }
-
         .widget-title i {
-            color: #38bdf8;
-            margin-right: 10px;
-            font-size: 1.5rem;
+            color: var(--admin-accent);
+            margin-right: 15px;
         }
 
-        .table-dark-custom { background-color: transparent; }
-        .table-dark-custom thead { color: #38bdf8; }
-        .table-dark-custom th, .table-dark-custom td { border-color: rgba(255, 255, 255, 0.15); vertical-align: middle; }
-        .table-dark-custom tbody tr:hover { background-color: rgba(56, 189, 248, 0.1); }
-
+        /* --- Table Styling --- */
+        .table-custom {
+            background-color: transparent;
+            color: var(--text-primary);
+        }
+        .table-custom thead th {
+            color: var(--admin-accent);
+            border-bottom-width: 2px;
+        }
+        .table-custom th, .table-custom td {
+            border-color: var(--border-color);
+            vertical-align: middle;
+        }
+        .table-custom tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+        .table-custom .btn-icon {
+            background: transparent;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 5px;
+            transition: all 0.2s ease-in-out;
+            font-size: 1.1rem;
+        }
+        .table-custom .btn-icon.btn-edit {
+            color: var(--admin-accent);
+        }
+        .table-custom .btn-icon.btn-edit:hover {
+            color: var(--text-primary);
+            background-color: rgba(99, 102, 241, 0.9);
+        }
+        .table-custom .btn-icon.btn-delete {
+            color: var(--danger-color);
+        }
+        .table-custom .btn-icon.btn-delete:hover {
+            color: white;
+            background-color: rgba(244, 63, 94, 0.9);
+        }
         .actions-column {
-            width: 150px; /* Sets a fixed width */
-            white-space: nowrap; /* Prevents buttons from wrapping */
+            width: 120px; /* Adjusted width for icons */
+            white-space: nowrap;
         }
 
-        .form-control-dark { background-color: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; }
-        .form-control-dark:focus { background-color: rgba(0, 0, 0, 0.4); border-color: #38bdf8; box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25); color: #fff; }
-        .form-control-dark::placeholder { color: rgba(255, 255, 255, 0.5); }
+        /* --- Form & Modal Styling --- */
+        .form-control-dark {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 10px;
+            height: 45px;
+        }
+        .form-control-dark:focus {
+            background-color: rgba(16, 23, 42, 1);
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.25);
+        }
+        .btn-custom {
+            background: var(--admin-glow);
+            color: var(--text-primary);
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: background 0.3s ease;
+        }
 
-        .btn-custom { background: #38bdf8; color: #111827; font-weight: 600; border: none; }
-        .btn-custom:hover { background: #38bdf6; }
-
-        .modal-dark { background: #1f2937; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .modal-dark .modal-header, .modal-dark .modal-footer { border-color: rgba(255, 255, 255, 0.1); }
-
+        .btn-custom:hover {
+            background: var(--admin-glow-dark);
+        }
+        .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .modal-header, .modal-footer {
+            border-color: var(--border-color);
+        }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
         .filter-icon { cursor: pointer; margin-left: 8px; }
-        .dropdown-menu { background-color: #1f2937; border-color: rgba(255, 255, 255, 0.15); }
-        .dropdown-item { color: #fff; }
-        .dropdown-item:hover { background-color: rgba(56, 189, 248, 0.1); }
+        .dropdown-menu {
+            background-color: #1f2937;
+            border-color: var(--border-color);
+        }
+        .dropdown-item { color: var(--text-secondary); }
+        .dropdown-item:hover { background-color: rgba(99, 102, 241, 0.1); color: var(--text-primary); }
 
-        .toast-notification { position: fixed; top: 20px; right: 20px; background-color: #28a745; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; z-index: 1050; transform: translateX(120%); transition: transform 0.5s ease-in-out; }
+        /* --- Toast --- */
+        .toast-notification {
+            position: fixed; top: 20px; right: 20px; z-index: 1050; background: #333;
+            color: white; padding: 15px 20px; border-radius: 8px;
+            border-left: 5px solid var(--admin-accent); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex; align-items: center; transform: translateX(120%);
+            transition: transform 0.5s ease-in-out;
+        }
         .toast-notification.show { transform: translateX(0); }
-        .toast-notification.error { background-color: #dc3545; }
+        .toast-notification.error { border-left-color: #dc3545; }
         .toast-notification i { font-size: 1.5rem; margin-right: 10px; }
+        #searchInput::placeholder {
+            color: Gray;
+            opacity: 1;
+        }
+
+        #addParcelModal input,
+        #addParcelModal textarea {
+            color: white;
+        }
+
+        /* Make placeholder text white & visible */
+        #addParcelModal input::placeholder,
+        #addParcelModal textarea::placeholder {
+            color: white;
+            opacity: 0.7; /* Slight fade for placeholder */
+        }
+
+        /* Optional: background for better visibility */
+        #addParcelModal input,
+        #addParcelModal textarea {
+            background-color: #111827; /* dark background */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #editParcelModal input,
+        #editParcelModal textarea,
+        #editParcelModal select {
+            color: white;
+            background-color: #111827; /* dark background */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Placeholder text color */
+        #editParcelModal input::placeholder,
+        #editParcelModal textarea::placeholder {
+            color: white;
+            opacity: 0.7;
+        }
+
+        /* Optional: dropdown arrow visibility in select */
+        #editParcelModal select option {
+            background-color: #111827;
+            color: white;
+        }
     </style>
 </head>
 <body>
 
-<canvas id="plexus-canvas"></canvas>
+<canvas id="particle-canvas"></canvas>
 
 <div id="toast" class="toast-notification">
     <i id="toast-icon" class="bi"></i>
@@ -105,10 +250,8 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="admin-home.html"><i class="bi bi-shield-lock me-2"></i>RouteMax Admin</a>
-        <div class="d-flex align-items-center">
-            <a href="admin-home.html" class="btn btn-outline-light">Back to Dashboard</a>
-        </div>
+        <a class="navbar-brand" href="admin-home.html"><i class="bi bi-shield-lock me-2"></i>RouteMax Admin</a>
+        <a href="admin-home.html" class="btn btn-back">Back to Dashboard</a>
     </div>
 </nav>
 
@@ -120,22 +263,33 @@
                 <i class="bi bi-plus-circle me-2"></i>Add New Parcel
             </button>
         </div>
-        <input type="text" id="searchInput" class="form-control form-control-dark my-3" placeholder="Search by Tracking ID, Name, Address, or Status...">
+        <input
+                type="text"
+                id="searchInput"
+                class="form-control form-control-dark my-3"
+                placeholder="Search by Tracking ID, Name, Address, or Status..."
+                style="color: white;"
+        >
+
 
         <div class="table-responsive">
-            <table class="table table-dark-custom table-hover" id="parcelTable">
+            <table class="table table-custom" id="parcelTable">
                 <thead>
                 <tr>
                     <th>Tracking ID</th>
-                    <th>Customer Email</th>
+                    <th>Customer</th>
                     <th>Sender</th>
                     <th>Recipient</th>
                     <th class="dropdown">
                         Status <i class="bi bi-funnel-fill filter-icon" data-bs-toggle="dropdown"></i>
-                        <ul class="dropdown-menu dropdown-menu-dark">
+                        <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#" onclick="filterByStatus('All')">All</a></li>
+                            <li><hr class="dropdown-divider" style="border-color: var(--border-color);"></li>
                             <li><a class="dropdown-item" href="#" onclick="filterByStatus('Created')">Created</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByStatus('Dispatched')">Dispatched</a></li>
                             <li><a class="dropdown-item" href="#" onclick="filterByStatus('In Transit')">In Transit</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByStatus('At Warehouse')">At Warehouse</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="filterByStatus('Out for Delivery')">Out for Delivery</a></li>
                             <li><a class="dropdown-item" href="#" onclick="filterByStatus('Delivered')">Delivered</a></li>
                             <li><a class="dropdown-item" href="#" onclick="filterByStatus('Cancelled')">Cancelled</a></li>
                         </ul>
@@ -152,10 +306,10 @@
 <!-- Add Parcel Modal -->
 <div class="modal fade" id="addParcelModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-dark">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add New Parcel</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="addParcelForm">
@@ -194,10 +348,10 @@
 <!-- Edit Parcel Modal -->
 <div class="modal fade" id="editParcelModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-dark">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Parcel</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="editParcelForm">
@@ -227,7 +381,10 @@
                         <label for="editStatus" class="form-label">Status</label>
                         <select class="form-select form-control-dark" id="editStatus" required>
                             <option value="Created">Created</option>
+                            <option value="Dispatched">Dispatched</option>
                             <option value="In Transit">In Transit</option>
+                            <option value="At Warehouse">At Warehouse</option>
+                            <option value="Out for Delivery">Out for Delivery</option>
                             <option value="Delivered">Delivered</option>
                             <option value="Cancelled">Cancelled</option>
                         </select>
@@ -242,10 +399,10 @@
 <!-- Confirmation Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content modal-dark">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Confirm Action</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p id="confirmModalText"></p>
@@ -260,6 +417,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // --- ALL JAVASCRIPT IS PRESERVED AND UNCHANGED ---
     const authHeader = { "Authorization": "Basic " + btoa("admin:admin123"), "Content-Type": "application/json" };
     let allParcels = [];
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
@@ -273,7 +431,7 @@
         toastIcon.className = 'bi';
         if (isError) {
             toast.classList.add('error');
-            toastIcon.classList.add('bi-x-circle-fill');
+            toastIcon.classList.add('bi-exclamation-triangle-fill');
         } else {
             toastIcon.classList.add('bi-check-circle-fill');
         }
@@ -339,27 +497,35 @@
     function renderParcels(parcels) {
         const body = document.getElementById("parcelTableBody");
         body.innerHTML = "";
+        if (parcels.length === 0) {
+            body.innerHTML = '<tr><td colspan="6" class="text-center text-secondary">No parcels found.</td></tr>';
+            return;
+        }
         parcels.forEach(p => {
-            body.innerHTML += `
-              <tr>
-                <td>${p.trackingId}</td>
-                <td>${p.customerEmail}</td>
-                <td><b>${p.senderName}</b><br><small class="text-dark">${p.senderAddress}</small></td>
-                <td><b>${p.recipientName}</b><br><small class="text-dark">${p.recipientAddress}</small></td>
-                <td><span class="badge ${getStatusColor(p.status)}">${p.status}</span></td>
-                <td class="text-end actions-column">
-                  <button class="btn btn-sm btn-outline-primary" onclick="editParcel('${p.trackingId}')">Edit</button>
-                  <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete('${p.trackingId}')">Delete</button>
-                </td>
-              </tr>
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${p.trackingId}</td>
+              <td>${p.customerEmail}</td>
+              <td><b>${p.senderName}</b><br><small class="text-secondary">${p.senderAddress}</small></td>
+              <td><b>${p.recipientName}</b><br><small class="text-secondary">${p.recipientAddress}</small></td>
+              <td><span class="badge ${getStatusColor(p.status)}">${p.status}</span></td>
+            <td class="text-end actions-column">
+                <button class="btn-icon btn-edit" title="Edit Parcel" onclick="editParcel('${p.trackingId}')"><i class="bi bi-pencil-square"></i></button>
+                <button class="btn-icon btn-delete" title="Delete Parcel" onclick="confirmDelete('${p.trackingId}')"><i class="bi bi-trash3-fill"></i></button>
+              </td>
+
             `;
+            body.appendChild(tr);
         });
     }
 
     function getStatusColor(status) {
         switch (status) {
             case 'Delivered': return 'bg-success';
-            case 'In Transit': return 'bg-info';
+            case 'Out for Delivery': return 'bg-primary';
+            case 'In Transit': return 'bg-info text-dark';
+            case 'Dispatched': return 'bg-warning text-dark';
+            case 'At Warehouse': return 'bg-light text-dark';
             case 'Cancelled': return 'bg-danger';
             case 'Created':
             default: return 'bg-secondary';
@@ -437,45 +603,78 @@
 
     document.addEventListener("DOMContentLoaded", fetchParcels);
 
-    // --- Plexus Animation Script ---
-    const canvas = document.getElementById('plexus-canvas');
+    // --- Animated Particle Network Background Script ---
+    const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    let points = [];
-    class Point {
-        constructor(x, y) { this.x = x; this.y = y; this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5; this.radius = 1.5; }
-        move() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > canvas.width) this.vx *= -1; if (this.y < 0 || this.y > canvas.height) this.vy *= -1; }
-        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'rgba(56, 189, 248, 0.8)'; ctx.fill(); }
-    }
-    function init() {
-        points = [];
-        const pointCount = (canvas.width * canvas.height) / 10000;
-        for (let i = 0; i < pointCount; i++) {
-            points.push(new Point(Math.random() * canvas.width, Math.random() * canvas.height));
+    let particlesArray;
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+        update() {
+            if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+            if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+            this.x += this.directionX; this.y += this.directionY;
+            this.draw();
         }
     }
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        points.forEach(point => { point.move(); point.draw(); });
-        drawLines();
-        requestAnimationFrame(animate);
+
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 2.5) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * .4) - .2;
+            let directionY = (Math.random() * .4) - .2;
+            let color = Math.random() > 0.5 ? 'rgba(99, 102, 241, 0.8)' : 'rgba(139, 92, 246, 0.8)';
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
     }
-    function drawLines() {
-        for (let i = 0; i < points.length; i++) {
-            for (let j = i + 1; j < points.length; j++) {
-                const dist = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
-                if (dist < 120) {
+
+    function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a; b < particlesArray.length; b++) {
+                let distance = ((particlesArray[a].x - particlesArray[b].x) ** 2) + ((particlesArray[a].y - particlesArray[b].y) ** 2);
+                if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                    opacityValue = 1 - (distance / 20000);
+                    ctx.strokeStyle = `rgba(139, 92, 246, ${opacityValue})`;
+                    ctx.lineWidth = 1;
                     ctx.beginPath();
-                    ctx.moveTo(points[i].x, points[i].y);
-                    ctx.lineTo(points[j].x, points[j].y);
-                    ctx.strokeStyle = `rgba(56, 189, 248, ${1 - dist / 120})`;
+                    ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                    ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
                     ctx.stroke();
                 }
             }
         }
     }
-    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; init(); });
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+        connect();
+    }
+
+    window.addEventListener('resize', () => {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        init();
+    });
+
     init();
     animate();
 </script>

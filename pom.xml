@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.3</version> <!-- Note: As of my last update, 3.3.x or 3.2.x might be more stable. 3.5.3 is very new. -->
+		<version>3.3.2</version> <!-- Using a slightly more stable version -->
 		<relativePath/>
 	</parent>
 
@@ -53,14 +53,7 @@
 			<version>1.18.30</version>
 		</dependency>
 
-		<!-- DB Driver -->
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<!-- ✅ ADDED: PostgreSQL Driver for Render -->
+		<!-- DB Driver for Render -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

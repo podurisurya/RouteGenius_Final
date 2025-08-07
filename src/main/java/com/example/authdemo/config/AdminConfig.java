@@ -8,10 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class AdminConfig {
 
-    // The userDetailsService() bean has been completely removed from this file.
-    // This is critical to resolving the authentication conflict.
-    // This class's only responsibility now is to provide the password encoder.
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
